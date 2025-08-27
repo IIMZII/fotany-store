@@ -6,10 +6,9 @@
   <title>Fotany Store</title>
   <meta name="description" content="Fotany Store — Buy and sell online usernames/handles." />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    .fade-in { animation: fade-in 220ms ease-out; }
-    @keyframes fade-in { from {opacity:0; transform:translateY(4px);} to {opacity:1; transform:translateY(0);} }
+    .fade-in { animation: fade-in .2s ease-out; }
+    @keyframes fade-in { from {opacity:0; transform:translateY(4px)} to {opacity:1; transform:none} }
   </style>
 </head>
 <body class="bg-zinc-50 text-zinc-900">
@@ -22,14 +21,13 @@
         <p class="text-xs text-zinc-500">Official marketplace by Fotany. Buy and sell exclusive usernames.</p>
       </div>
       <div class="flex items-center gap-2">
-        <button id="langBtn" class="text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" aria-label="Change language">العربية</button>
         <button id="loginBtn" class="text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Login</button>
         <a href="#add" id="addListingBtn" class="hidden sm:inline-block text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Add listing</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero / Welcome -->
+  <!-- Hero -->
   <section class="border-b border-zinc-200 bg-white/40">
     <div class="max-w-6xl mx-auto px-4 py-10 md:py-14 grid md:grid-cols-2 gap-6 items-center">
       <div>
@@ -129,9 +127,7 @@
       <div class="mt-4 grid gap-3">
         <a id="dcBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">Contact on Discord</a>
         <a id="tgBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-cyan-600 text-white hover:bg-cyan-700">Contact on Telegram</a>
-        <a id="stripeBtn" target="_blank" class="hidden text-center px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Pay with Stripe</a>
         <button id="inquiryBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Message the store</button>
-        <button id="reserveBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Mark as Reserved (local)</button>
         <button id="copyBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Copy username</button>
       </div>
       <div id="inquiryForm" class="hidden mt-3">
@@ -178,7 +174,7 @@
           <input name="pass" type="password" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="••••••" />
         </div>
         <button class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Login</button>
-        <p class="text-xs text-zinc-500">Local login works now. For secure auth, set Supabase below.</p>
+        <p class="text-xs text-zinc-500">Local login works now. (mohamed / Mm322610@123)</p>
       </form>
     </div>
   </div>
@@ -223,10 +219,6 @@
             <select name="status" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300">
               <option>Available</option><option>Reserved</option><option>Sold</option>
             </select>
-          </div>
-          <div>
-            <label class="text-xs text-zinc-600">Stripe Payment Link (optional)</label>
-            <input name="stripe" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="https://buy.stripe.com/..." />
           </div>
           <div class="sm:col-span-2 flex items-center justify-end gap-2 mt-2">
             <button type="button" id="refreshBtn" class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Refresh</button>
@@ -280,175 +272,149 @@
   </div>
 
   <script>
-  // =================== CONFIG ===================
-  const MODE = 'auto'; // 'auto' -> use Supabase if configured, else local demo mode
-  const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-  const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
-  const SELLER_DISCORD = 'https://discord.gg/YOUR_INVITE'; // server invite URL
-  const SELLER_TELEGRAM = 'yourtelegram'; // username without @
+  // ======== CONFIG ========
+  const SELLER_DISCORD = 'https://discord.gg/YOUR_INVITE'; // Discord invite
+  const SELLER_TELEGRAM = 'yourtelegram'; // username (no @)
   const CURRENCY = 'AED';
 
-  // Init supabase (even if not configured)
-  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true } });
-  const supaConfigured = !SUPABASE_URL.includes('YOUR-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR-ANON-KEY');
-  const EFFECTIVE_MODE = MODE === 'auto' ? (supaConfigured ? 'supabase' : 'local') : MODE;
-
-  // =================== DOM REFS ===================
-  const els = {
-    year: byId('year'),
-    catalog: byId('catalog'),
-    empty: byId('emptyState'),
-    search: byId('search'), platform: byId('platform'), status: byId('status'), sort: byId('sort'),
-    buyModal: byId('buyModal'), mTitle: byId('mTitle'), mSubtitle: byId('mSubtitle'),
-    dcBtn: byId('dcBtn'), tgBtn: byId('tgBtn'), stripeBtn: byId('stripeBtn'),
-    reserveBtn: byId('reserveBtn'), copyBtn: byId('copyBtn'),
-    loginBtn: byId('loginBtn'), heroLoginBtn: byId('heroLoginBtn'), loginModal: byId('loginModal'), loginForm: byId('loginForm'),
-    adminModal: byId('adminModal'), addForm: byId('addForm'), adminList: byId('adminList'), refreshBtn: byId('refreshBtn'),
-    inquiryBtn: byId('inquiryBtn'), inquiryForm: byId('inquiryForm'), inquiryText: byId('inquiryText'), sendInquiry: byId('sendInquiry'),
-    inqStatus: byId('inqStatus'), browseBtn: byId('browseBtn'),
-    tabListings: byId('tabListings'), tabChats: byId('tabChats'), panelListings: byId('panelListings'), panelChats: byId('panelChats'),
-    chatsList: byId('chatsList'), chatDetail: byId('chatDetail'), ticketMeta: byId('ticketMeta'), threadMsgs: byId('threadMsgs'),
-    replyText: byId('replyText'), sendReply: byId('sendReply'), closeTicket: byId('closeTicket'), reopenTicket: byId('reopenTicket'),
-  };
-  function byId(id){ return document.getElementById(id); }
-
-  // =================== STATE ===================
-  let active = []; // listings
-  let currentItem = null;
-  let isStaff = false;
-  let currentThreadId = null;
-
-  // local demo DB
-  const LSK = { db: 'fs:db', lang: 'fs:lang', publicDesc: 'fs:desc' };
-  function uuid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(16) + Math.random().toString(16).slice(2) + 'xxxxxxx').slice(0,36); }
-  function ldb(){ try{ return JSON.parse(localStorage.getItem(LSK.db)||'{}'); } catch { return {}; } }
-  function ldbSave(db){ localStorage.setItem(LSK.db, JSON.stringify(db)); }
-  function ensureDemo(){ const db = ldb(); db.listings = db.listings || [
-      { id:'seed1', username:'@DesertKing', platform:'Instagram', price:3500, tags:['arabic','luxury'], status:'Available', createdAt:'2025-08-20T09:00:00Z', stripe:''},
-      { id:'seed2', username:'@FalconTech', platform:'X', price:2800, tags:['tech','uae'], status:'Available', createdAt:'2025-08-18T13:00:00Z', stripe:''},
-      { id:'seed3', username:'@Mawsem', platform:'Instagram', price:4200, tags:['honey'], status:'Reserved', createdAt:'2025-08-17T10:30:00Z', stripe:''}
+  // ======== UTIL / LOCAL DB ========
+  const els = Object.fromEntries(['year','catalog','emptyState','search','platform','status','sort','browseBtn','buyModal','mTitle','mSubtitle','dcBtn','tgBtn','inquiryBtn','copyBtn','inquiryForm','inquiryText','sendInquiry','inqStatus','loginBtn','heroLoginBtn','loginModal','loginForm','adminModal','addListingBtn','addForm','adminList','refreshBtn','tabListings','tabChats','panelListings','panelChats','chatsList','chatDetail','ticketMeta','threadMsgs','replyText','sendReply','closeTicket','reopenTicket'].map(id=>[id,document.getElementById(id)]));
+  const LSK = { db: 'fs:db', publicDesc: 'fs:desc' };
+  function uuid(){ return (crypto&&crypto.randomUUID)?crypto.randomUUID():Math.random().toString(16).slice(2)+'-'+Date.now(); }
+  function dbGet(){ try{ return JSON.parse(localStorage.getItem(LSK.db)||'{}'); } catch { return {}; } }
+  function dbSet(v){ localStorage.setItem(LSK.db, JSON.stringify(v)); }
+  function dbEnsure(){
+    const db = dbGet();
+    db.listings ??= [
+      { id:'seed1', username:'@DesertKing', platform:'Instagram', price:3500, tags:['arabic','luxury'], status:'Available', createdAt:'2025-08-20T09:00:00Z' },
+      { id:'seed2', username:'@FalconTech', platform:'X',         price:2800, tags:['tech','uae'],    status:'Available', createdAt:'2025-08-18T13:00:00Z' },
+      { id:'seed3', username:'@Mawsem',     platform:'Instagram', price:4200, tags:['honey'],         status:'Reserved',  createdAt:'2025-08-17T10:30:00Z' }
     ];
-    db.inquiries = db.inquiries || []; db.messages = db.messages || []; ldbSave(db);
+    db.inquiries ??= []; db.messages ??= [];
+    dbSet(db);
   }
+  dbEnsure();
+  let isStaff = false, currentItem = null, currentThreadId = null, active = [];
 
-  // Helpers
-  const money = (n) => new Intl.NumberFormat(undefined, { style:'currency', currency:'USD' }).format(n).replace('US$', CURRENCY + ' ');
+  // ======== HELPERS ========
+  const money = (n) => new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(n).replace('US$ ', CURRENCY+' ');
   const platformColor = (p) => ({ Instagram:'bg-pink-600', TikTok:'bg-gray-900', X:'bg-black', Snapchat:'bg-yellow-400 text-black', Discord:'bg-indigo-600', Gaming:'bg-emerald-600', Email:'bg-zinc-700', Other:'bg-zinc-500' }[p]||'bg-zinc-500');
 
-  // =================== DATA APIs ===================
-  const api = EFFECTIVE_MODE === 'supabase' ? {
-    async listListings(){ const { data, error } = await sb.from('listings').select('*').order('created_at', {ascending:false}); if(error) throw error;
-      return (data||[]).map(x => ({ id:x.id, username:x.username, platform:x.platform, price:Number(x.price||0), tags:x.tags||[], status:x.status||'Available', createdAt:x.created_at, stripe:x.stripe||'' })); },
-    async addListing(it){ const { error } = await sb.from('listings').insert(it); if (error) throw error; },
-    async listTickets(){ const { data, error } = await sb.from('inquiries').select('id, listing_id, message, subject, category, status, created_at, listing:listings(username, platform)').order('created_at', {ascending:false}).limit(100); if(error) throw error; return data||[]; },
-    async ticketMessages(id){ const { data, error } = await sb.from('inquiries_messages').select('*').eq('thread_id', id).order('created_at'); if(error) throw error; return data||[]; },
-    async replyStaff(id, text){ const { error } = await sb.from('inquiries_messages').insert({ thread_id:id, role:'staff', text }); if(error) throw error; },
-    async setStatus(id, status){ const { error } = await sb.from('inquiries').update({status}).eq('id', id); if(error) throw error; },
-    async openTicket(listingId, subject, category, contact, message){
-      const token = uuid();
-      const { data, error } = await sb.from('inquiries').insert({ listing_id:listingId, message, subject, category, contact, status:'open', viewer_token: token }).select('id');
-      if(error) throw error; return { id:data?.[0]?.id, token };
+  // ======== API (LOCAL) ========
+  const api = {
+    listListings(){ return dbGet().listings; },
+    addListing(it){ const db=dbGet(); it.id=uuid(); it.createdAt=new Date().toISOString(); db.listings.unshift(it); dbSet(db); },
+    deleteListing(id){ const db=dbGet(); db.listings = (db.listings||[]).filter(l=>String(l.id)!==String(id)); dbSet(db); },
+    listTickets(){ const db=dbGet(); return (db.inquiries||[]).map(q=>({ id:q.id, listing_id:q.listing_id, message:q.message, subject:q.subject, category:q.category, status:q.status, created_at:q.created_at, listing:{ username:(db.listings.find(l=>l.id===q.listing_id)||{}).username, platform:(db.listings.find(l=>l.id===q.listing_id)||{}).platform } })); },
+    ticketMessages(id){ const db=dbGet(); return (db.messages||[]).filter(m=>m.thread_id===id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)); },
+    replyStaff(id, text){ const db=dbGet(); db.messages.push({ id:uuid(), thread_id:id, role:'staff', text, created_at:new Date().toISOString() }); dbSet(db); },
+    setStatus(id,status){ const db=dbGet(); const t=db.inquiries.find(x=>x.id===id); if(t) t.status=status; dbSet(db); },
+    openTicket(listingId, subject, category, contact, message){
+      const db=dbGet(); const id=uuid(); const token=uuid();
+      db.inquiries.push({ id, listing_id:listingId, message, subject, category, contact, status:'open', viewer_token:token, created_at:new Date().toISOString() });
+      db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text:message, created_at:new Date().toISOString() });
+      dbSet(db); return { id, token };
     },
-    async portalGet(id, token){ const { data, error } = await sb.rpc('ticket_get', { p_id:id, p_token:token }); if(error) throw error; return data; },
-    async portalPost(id, token, text){ const { data, error } = await sb.rpc('ticket_post', { p_id:id, p_token:token, p_text:text }); if(error) throw error; return data===true; }
-  } : {
-    // LOCAL DEMO
-    async listListings(){ ensureDemo(); return ldb().listings; },
-    async addListing(it){ const db=ldb(); it.id=uuid(); it.createdAt=new Date().toISOString(); db.listings.unshift(it); ldbSave(db); },
-    async listTickets(){ const db=ldb(); return (db.inquiries||[]).map(q=>({ id:q.id, listing_id:q.listing_id, message:q.message, subject:q.subject, category:q.category, status:q.status, created_at:q.created_at, listing:{ username:(ldb().listings.find(l=>l.id===q.listing_id)||{}).username, platform:(ldb().listings.find(l=>l.id===q.listing_id)||{}).platform } })); },
-    async ticketMessages(id){ const db=ldb(); return (db.messages||[]).filter(m=>m.thread_id===id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)); },
-    async replyStaff(id, text){ const db=ldb(); db.messages.push({ id:uuid(), thread_id:id, role:'staff', text, created_at:new Date().toISOString() }); ldbSave(db); },
-    async setStatus(id, status){ const db=ldb(); const t=db.inquiries.find(x=>x.id===id); if(t) t.status=status; ldbSave(db); },
-    async openTicket(listingId, subject, category, contact, message){ const db=ldb(); const id=uuid(); const token=uuid(); db.inquiries.push({ id, listing_id:listingId, message, subject, category, contact, status:'open', viewer_token:token, created_at:new Date().toISOString() }); db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text:message, created_at:new Date().toISOString() }); ldbSave(db); return { id, token }; },
-    async portalGet(id, token){ const db=ldb(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return []; const msgs=(db.messages||[]).filter(m=>m.thread_id===id); return [{ id, subject:t.subject||'Ticket', category:t.category||'General', status:t.status, listing_username:(ldb().listings.find(l=>l.id===t.listing_id)||{}).username, messages: msgs }]; },
-    async portalPost(id, token, text){ const db=ldb(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return false; db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text, created_at:new Date().toISOString() }); ldbSave(db); return true; }
+    portalGet(id, token){
+      const db=dbGet(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return [];
+      const msgs=(db.messages||[]).filter(m=>m.thread_id===id);
+      return [{ id, subject:t.subject||'Ticket', category:t.category||'General', status:t.status, listing_username:(db.listings.find(l=>l.id===t.listing_id)||{}).username, messages: msgs }];
+    },
+    portalPost(id, token, text){
+      const db=dbGet(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return false;
+      db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text, created_at:new Date().toISOString() }); dbSet(db); return true;
+    }
   };
 
-  // =================== RENDER ===================
-  let isRendering = false;
-  async function render(){
-    if (isRendering) return; isRendering = true;
-    try{
-      active = await api.listListings();
-      const q = (els.search?.value||'').trim().toLowerCase();
-      const pf = els.platform?.value||''; const st = els.status?.value||''; const sort = els.sort?.value||'new';
-      let list = active.filter(it => {
-        const matchesQ = !q || (it.username||'').toLowerCase().includes(q) || (it.tags||[]).join(' ').toLowerCase().includes(q);
-        const matchesP = !pf || it.platform === pf; const matchesS = !st || it.status === st;
-        return matchesQ && matchesP && matchesS;
-      });
-      list.sort((a,b)=> sort==='priceAsc'? a.price-b.price : sort==='priceDesc'? b.price-a.price : sort==='name'? String(a.username).localeCompare(String(b.username)) : new Date(b.createdAt||0)-new Date(a.createdAt||0));
-      els.catalog.innerHTML = '';
-      if (!list.length){ els.empty.classList.remove('hidden'); return; } else { els.empty.classList.add('hidden'); }
-      list.forEach(it => {
-        const sold = it.status==='Sold'; const reserved = it.status==='Reserved';
-        const statusClass = sold?'bg-zinc-200 text-zinc-700': reserved?'bg-amber-100 text-amber-800':'bg-emerald-100 text-emerald-800';
-        const btnDisabled = sold ? 'opacity-60 pointer-events-none' : '';
-        const platformBadge = `<span class="px-2 py-1 rounded-lg text-xs text-white ${platformColor(it.platform)}">${it.platform}</span>`;
-        const tagBadges = (it.tags||[]).slice(0,5).map(t=>`<span class="px-2 py-0.5 rounded-lg text-xs border border-zinc-300 bg-white">${t}</span>`).join(' ');
-        const card = document.createElement('div');
-        card.className = 'bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm hover:shadow-md transition-shadow fade-in flex flex-col justify-between';
-        card.innerHTML = `
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <div class="text-lg font-semibold break-all">${it.username}</div>
-              <div class="mt-1 flex items-center gap-2">${platformBadge} ${tagBadges}</div>
-            </div>
-            <div class="text-right">
-              <div class="text-base font-semibold">${money(it.price)}</div>
-              <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-lg text-xs ${statusClass}">${it.status}</div>
-            </div>
+  // ======== RENDER ========
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  function renderCatalog(){
+    active = api.listListings();
+    const q=(els.search.value||'').toLowerCase().trim();
+    const pf=els.platform.value||'', st=els.status.value||'', sort=els.sort.value||'new';
+    let list = active.filter(it=>{
+      const MQ = !q || (it.username||'').toLowerCase().includes(q) || (it.tags||[]).join(' ').toLowerCase().includes(q);
+      const MP = !pf || it.platform===pf, MS = !st || it.status===st; return MQ && MP && MS;
+    });
+    list.sort((a,b)=> sort==='priceAsc'? a.price-b.price : sort==='priceDesc'? b.price-a.price : sort==='name'? String(a.username).localeCompare(String(b.username)) : new Date(b.createdAt)-new Date(a.createdAt));
+    const wrap = els.catalog; wrap.innerHTML = '';
+    if (!list.length){ document.getElementById('emptyState').classList.remove('hidden'); return; }
+    document.getElementById('emptyState').classList.add('hidden');
+    list.forEach(it=>{
+      const sold=it.status==='Sold', reserved=it.status==='Reserved';
+      const statusClass=sold?'bg-zinc-200 text-zinc-700': reserved?'bg-amber-100 text-amber-800':'bg-emerald-100 text-emerald-800';
+      const btnDisabled = sold ? 'opacity-60 pointer-events-none' : '';
+      const tagBadges=(it.tags||[]).slice(0,5).map(t=>`<span class="px-2 py-0.5 rounded-lg text-xs border border-zinc-300 bg-white">${t}</span>`).join(' ');
+      const card=document.createElement('div'); card.className='bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm hover:shadow-md transition-shadow fade-in flex flex-col justify-between';
+      card.innerHTML=`
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-lg font-semibold break-all">${it.username}</div>
+            <div class="mt-1 flex items-center gap-2"><span class="px-2 py-1 rounded-lg text-xs text-white ${platformColor(it.platform)}">${it.platform}</span> ${tagBadges}</div>
           </div>
-          <div class="mt-4 flex items-center gap-2">
-            <button class="flex-1 ${btnDisabled} px-3 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-id="${it.id}" data-action="buy">${sold ? 'Unavailable' : 'Buy now'}</button>
-            <button class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-id="${it.id}" data-action="copy">Copy</button>
+          <div class="text-right">
+            <div class="text-base font-semibold">${money(it.price)}</div>
+            <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-lg text-xs ${statusClass}">${it.status}</div>
           </div>
-          <div class="mt-2 text-[11px] text-zinc-500">Added: ${new Date(it.createdAt||Date.now()).toLocaleDateString()}</div>`;
-        els.catalog.appendChild(card);
-      });
-    } finally { isRendering = false; }
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <button class="flex-1 ${btnDisabled} px-3 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-id="${it.id}" data-action="buy">${sold?'Unavailable':'Buy now'}</button>
+          <button class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-id="${it.id}" data-action="copy">Copy</button>
+        </div>
+        <div class="mt-2 text-[11px] text-zinc-500">Added: ${new Date(it.createdAt).toLocaleDateString()}</div>`;
+      wrap.appendChild(card);
+    });
   }
 
   function openModal(item){
-    currentItem = item;
-    els.mTitle.textContent = `${item.username} • ${item.platform}`;
-    els.mSubtitle.textContent = `${money(item.price)} — ${item.status}`;
-    const dclink = SELLER_DISCORD.startsWith('http') ? SELLER_DISCORD : `https://discord.gg/${SELLER_DISCORD}`;
-    els.dcBtn.href = dclink;
-    els.tgBtn.href = `https://t.me/${SELLER_TELEGRAM}?text=${encodeURIComponent('Hi, I am interested in ' + item.username + ' (' + item.platform + ') for ' + CURRENCY + ' ' + item.price)}`;
-    els.inquiryForm.classList.add('hidden'); els.inquiryText.value=''; els.inqStatus.textContent='';
-    els.buyModal.classList.remove('hidden');
+    currentItem=item;
+    document.getElementById('mTitle').textContent = `${item.username} • ${item.platform}`;
+    document.getElementById('mSubtitle').textContent = `${money(item.price)} — ${item.status}`;
+    const dclink = SELLER_DISCORD.startsWith('http')? SELLER_DISCORD : `https://discord.gg/${SELLER_DISCORD}`;
+    document.getElementById('dcBtn').href = dclink;
+    document.getElementById('tgBtn').href = `https://t.me/${SELLER_TELEGRAM}?text=${encodeURIComponent('Hi, I am interested in ' + item.username + ' (' + item.platform + ') for ' + CURRENCY + ' ' + item.price)}`;
+    document.getElementById('inquiryForm').classList.add('hidden');
+    document.getElementById('inquiryText').value='';
+    document.getElementById('inqStatus').textContent='';
+    document.getElementById('buyModal').classList.remove('hidden');
   }
-  function closeModal(){ els.buyModal.classList.add('hidden'); }
-  function openLogin(){ els.loginModal.classList.remove('hidden'); }
-  function closeLogin(){ els.loginModal.classList.add('hidden'); }
-  function openAdmin(){ if (!isStaff) { openLogin(); return; } els.adminModal.classList.remove('hidden'); refreshAdminList(); loadChats(); }
-  function closeAdmin(){ els.adminModal.classList.add('hidden'); }
+  function closeModal(){ document.getElementById('buyModal').classList.add('hidden'); }
+  function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); }
+  function closeLogin(){ document.getElementById('loginModal').classList.add('hidden'); }
+  function openAdmin(){ if(!isStaff){ openLogin(); return; } document.getElementById('adminModal').classList.remove('hidden'); refreshAdminList(); loadChats(); }
+  function closeAdmin(){ document.getElementById('adminModal').classList.add('hidden'); }
 
   function showTab(which){
-    const isList = which==='listings';
-    els.tabListings.setAttribute('aria-selected', String(isList));
-    els.tabChats.setAttribute('aria-selected', String(!isList));
-    els.panelListings.classList.toggle('hidden', !isList);
-    els.panelChats.classList.toggle('hidden', isList);
+    const list = which==='listings';
+    document.getElementById('tabListings').setAttribute('aria-selected', String(list));
+    document.getElementById('tabChats').setAttribute('aria-selected', String(!list));
+    document.getElementById('panelListings').classList.toggle('hidden', !list);
+    document.getElementById('panelChats').classList.toggle('hidden', list);
   }
 
-  // ===== Admin data =====
-  async function refreshAdminList(){
-    const data = await api.listListings();
-    els.adminList.innerHTML = (data||[]).map(x => `<div class="py-2 flex items-center justify-between gap-3">
-      <div class="truncate"><span class="font-medium">${x.username}</span> <span class="text-zinc-500">• ${x.platform}</span></div>
-      <div class="text-zinc-600">${money(Number(x.price||0))} — ${x.status}</div>
-    </div>`).join('');
+  // ======== Admin data ========
+  function refreshAdminList(){
+    const data = api.listListings();
+    document.getElementById('adminList').innerHTML = (data||[]).map(x=>`
+      <div class="py-2 flex items-center justify-between gap-3">
+        <div class="truncate">
+          <span class="font-medium">${x.username}</span>
+          <span class="text-zinc-500">• ${x.platform}</span>
+          <span class="ml-2 text-zinc-400 text-xs">${money(Number(x.price||0))} — ${x.status}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-100 text-xs" data-action="del" data-id="${x.id}">Delete</button>
+        </div>
+      </div>`).join('') || '<div class="py-3 text-zinc-500">No listings yet.</div>';
   }
-  async function loadChats(){
-    let data = [];
-    try { data = await api.listTickets(); } catch { data = []; }
-    els.chatsList.innerHTML = (data||[]).map(row => {
+  function loadChats(){
+    const data = api.listTickets();
+    document.getElementById('chatsList').innerHTML = (data||[]).map(row=>{
       const badge = row.status==='closed' ? 'bg-zinc-200 text-zinc-700' : 'bg-emerald-100 text-emerald-800';
       return `<div class="py-2 flex items-center justify-between gap-3">
         <div class="truncate">
-          <div class="text-sm font-medium">${row.subject||'Ticket'} — ${row.listing?.username || 'Unknown'} <span class="text-xs text-zinc-500">• ${row.listing?.platform||''}</span></div>
+          <div class="text-sm font-medium">${row.subject||'Ticket'} — ${row.listing?.username||'Unknown'} <span class="text-xs text-zinc-500">• ${row.listing?.platform||''}</span></div>
           <div class="text-xs text-zinc-600 truncate max-w-[42ch]">${row.category||'General'} · ${row.message}</div>
         </div>
         <div class="flex items-center gap-2">
@@ -458,122 +424,97 @@
       </div>`;
     }).join('') || '<div class="py-3 text-zinc-500">No tickets.</div>';
   }
-  async function openThread(id){
-    currentThreadId = id; els.chatDetail.classList.remove('hidden');
-    const metaList = await api.listTickets();
+  function openThread(id){
+    currentThreadId=id; document.getElementById('chatDetail').classList.remove('hidden');
+    const metaList = api.listTickets();
     const t = (metaList||[]).find(x=>x.id===id);
-    if (t) els.ticketMeta.textContent = `${t.subject||'Ticket'} • ${t.category||'General'} • ${t.status||'open'} • ${t.listing?.username||''}`;
-    const msgs = await api.ticketMessages(id);
-    els.threadMsgs.innerHTML = (msgs||[]).map(m => `<div class="${m.role==='staff'?'text-right':'text-left'}">
-      <span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span>
-    </div>`).join('');
-    els.threadMsgs.scrollTop = els.threadMsgs.scrollHeight;
+    if (t) document.getElementById('ticketMeta').textContent = `${t.subject||'Ticket'} • ${t.category||'General'} • ${t.status||'open'} • ${t.listing?.username||''}`;
+    const msgs = api.ticketMessages(id);
+    document.getElementById('threadMsgs').innerHTML = (msgs||[]).map(m=>`<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
+    document.getElementById('threadMsgs').scrollTop = document.getElementById('threadMsgs').scrollHeight;
   }
-  async function replyToThread(){
-    const txt = (els.replyText?.value||'').trim(); if (!txt || !currentThreadId) return;
-    await api.replyStaff(currentThreadId, txt); els.replyText.value=''; await openThread(currentThreadId);
+  function replyToThread(){
+    const txt = (document.getElementById('replyText').value||'').trim(); if(!txt||!currentThreadId) return;
+    api.replyStaff(currentThreadId, txt); document.getElementById('replyText').value=''; openThread(currentThreadId);
   }
-  async function closeThread(){ if (!currentThreadId) return; await api.setStatus(currentThreadId, 'closed'); await openThread(currentThreadId); }
-  async function reopenThread(){ if (!currentThreadId) return; await api.setStatus(currentThreadId, 'open'); await openThread(currentThreadId); }
+  function closeThread(){ if(!currentThreadId) return; api.setStatus(currentThreadId,'closed'); openThread(currentThreadId); }
+  function reopenThread(){ if(!currentThreadId) return; api.setStatus(currentThreadId,'open'); openThread(currentThreadId); }
 
-  // ===== Buyer portal via hash =====
-  async function maybeOpenPortalFromHash(){
-    const m = location.hash.match(/^#ticket=([0-9a-fA-F-\\-]{8,}):([0-9a-fA-F-\\-]{8,})$/);
-    if (!m) return;
+  // ======== Buyer portal (#ticket=<id>:<token>) ========
+  function maybeOpenPortalFromHash(){
+    const m = location.hash.match(/^#ticket=([0-9a-fA-F\-]{8,}):([0-9a-fA-F\-]{8,})$/); if(!m) return;
     const [, id, token] = m;
-    const res = await api.portalGet(id, token);
-    const modal = byId('ticketPortal'); const msgs = byId('tpMsgs'); const meta = byId('tpMeta'); const input = byId('tpReply'); const send = byId('tpSend');
-    if (!res || !res.length){ meta.textContent = 'Ticket not found or closed.'; modal.classList.remove('hidden'); return; }
+    const res = api.portalGet(id, token);
+    const modal = document.getElementById('ticketPortal'), msgs = document.getElementById('tpMsgs'), meta = document.getElementById('tpMeta'), input=document.getElementById('tpReply'), send=document.getElementById('tpSend');
+    if(!res || !res.length){ meta.textContent='Ticket not found or closed.'; modal.classList.remove('hidden'); return; }
     const t = res[0]; meta.textContent = `${t.subject} • ${t.category} • ${t.status} • ${t.listing_username||''}`;
-    msgs.innerHTML = (t.messages||[]).map(m => `<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
+    msgs.innerHTML = (t.messages||[]).map(m=>`<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
     modal.classList.remove('hidden');
-    send.onclick = async ()=>{ const txt=(input.value||'').trim(); if(!txt) return; const ok = await api.portalPost(id, token, txt); if(ok){ input.value=''; maybeOpenPortalFromHash(); } };
+    send.onclick = ()=>{ const txt=(input.value||'').trim(); if(!txt) return; const ok = api.portalPost(id, token, txt); if(ok){ input.value=''; maybeOpenPortalFromHash(); } };
   }
 
-  // ===== INIT =====
-  addEventListener('DOMContentLoaded', async () => {
-    els.year.textContent = new Date().getFullYear();
-
-    // Textarea local save
-    const savedDesc = localStorage.getItem(LSK.publicDesc)||''; byId('publicDesc').value = savedDesc;
-    byId('publicDesc').addEventListener('input', (e)=> localStorage.setItem(LSK.publicDesc, e.target.value));
-
-    // Filters + render
-    const debounce = (fn, ms=100)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms);} };
-    const debouncedRender = debounce(()=>render(), 80);
-    [els.search, els.platform, els.status, els.sort].forEach(el => el && el.addEventListener('input', debouncedRender));
-    els.browseBtn.addEventListener('click', (e)=>{ e.preventDefault(); els.search.value=''; els.platform.value=''; els.status.value=''; els.sort.value='new'; render(); byId('catalogSection').scrollIntoView({behavior:'smooth',block:'start'}); });
-
-    // Catalog actions
-    els.catalog.addEventListener('click', (e) => {
-      const btn = e.target.closest('button'); if (!btn) return;
-      const id = btn.getAttribute('data-id'); const action = btn.getAttribute('data-action'); const item = active.find(x => String(x.id) === String(id));
-      if (!item) return;
-      if (action==='buy' && item.status!=='Sold') openModal(item);
-      if (action==='copy') navigator.clipboard.writeText(item.username).then(()=>{ btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200); });
-    });
-
-    // Buy modal actions
-    els.copyBtn.addEventListener('click', () => { if (!currentItem) return; navigator.clipboard.writeText(currentItem.username); });
-    els.reserveBtn.addEventListener('click', () => { alert('Reservation flow is local only. For real payments, use Stripe/escrow.'); });
-    els.inquiryBtn.addEventListener('click', ()=> els.inquiryForm.classList.toggle('hidden'));
-    els.sendInquiry.addEventListener('click', async ()=>{
-      const msg = (els.inquiryText?.value||'').trim(); if (!msg || !currentItem) return; els.inqStatus.textContent = 'Opening ticket...';
-      const subject = (byId('inquirySubject')?.value||'').trim();
-      const category = (byId('inquiryCategory')?.value||'General');
-      const contact = (byId('inquiryContact')?.value||'').trim();
-      try{
-        const { id, token } = await api.openTicket(currentItem.id, subject, category, contact, msg);
-        const link = `#ticket=${id}:${token}`; els.inqStatus.innerHTML = `Ticket opened. <a href="${link}" class="underline">Open your ticket</a>`;
-        els.inquiryText.value=''; navigator.clipboard?.writeText(location.origin + location.pathname + link).catch(()=>{});
-      } catch { els.inqStatus.textContent = 'Failed. Try again.'; }
-    });
-
-    // Login
-    els.loginBtn.addEventListener('click', openLogin);
-    els.heroLoginBtn.addEventListener('click', openLogin);
-    els.loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const fd = new FormData(els.loginForm);
-      const emailRaw = String(fd.get('email')||'').trim();
-      const password = String(fd.get('pass')||'');
-      const isLocalStaff = ((emailRaw.toLowerCase()==='mohamed' || emailRaw.toLowerCase()==='mohamed@local.dev') && password==='Mm322610@123');
-      if (isLocalStaff || EFFECTIVE_MODE==='local'){ isStaff = true; closeLogin(); openAdmin(); return; }
-      try {
-        const { data, error } = await sb.auth.signInWithPassword({ email: emailRaw, password });
-        if (error) { alert('Invalid credentials'); return; }
-        const { data: prof } = await sb.from('profiles').select('is_staff').eq('id', data.user.id).single();
-        if (!prof?.is_staff){ alert('Not staff'); return; }
-        isStaff = true; closeLogin(); openAdmin();
-      } catch { alert('Login failed'); }
-    });
-
-    // Admin
-    byId('addListingBtn').addEventListener('click', (e)=>{ e.preventDefault(); openAdmin(); });
-    els.refreshBtn.addEventListener('click', refreshAdminList);
-    els.addForm.addEventListener('submit', async (e)=>{
-      e.preventDefault(); if (!isStaff) { openLogin(); return; }
-      const fd = new FormData(els.addForm);
-      const item = { username:String(fd.get('username')||'').trim(), platform:fd.get('platform'), price:Number(fd.get('price')||0), tags:String(fd.get('tags')||'').split(',').map(s=>s.trim()).filter(Boolean), status:fd.get('status'), stripe:String(fd.get('stripe')||'').trim() };
-      try { await api.addListing(item); els.addForm.reset(); refreshAdminList(); render(); } catch { alert('Add failed'); }
-    });
-
-    // Tickets tab
-    els.tabListings.addEventListener('click', ()=> showTab('listings'));
-    els.tabChats.addEventListener('click', ()=> { showTab('chats'); loadChats(); });
-    els.chatsList.addEventListener('click', (e)=>{ const btn=e.target.closest('button[data-thread]'); if (!btn) return; openThread(btn.getAttribute('data-thread')); });
-    els.sendReply.addEventListener('click', replyToThread);
-    els.closeTicket.addEventListener('click', closeThread);
-    els.reopenTicket.addEventListener('click', reopenThread);
-
-    // Buyer portal
-    window.addEventListener('hashchange', maybeOpenPortalFromHash);
-    await render(); maybeOpenPortalFromHash();
+  // ======== EVENTS ========
+  document.getElementById('publicDesc').value = localStorage.getItem(LSK.publicDesc)||'';
+  document.getElementById('publicDesc').addEventListener('input', e=> localStorage.setItem(LSK.publicDesc, e.target.value));
+  ['search','platform','status','sort'].forEach(k=> els[k].addEventListener('input', ()=>renderCatalog()));
+  document.getElementById('browseBtn').addEventListener('click', e=>{ e.preventDefault(); document.getElementById('catalogSection').scrollIntoView({behavior:'smooth',block:'start'}); });
+  document.getElementById('catalog').addEventListener('click', e=>{
+    const btn=e.target.closest('button'); if(!btn) return;
+    const id=btn.getAttribute('data-id'), act=btn.getAttribute('data-action'), item=(api.listListings()||[]).find(x=>String(x.id)===String(id));
+    if(!item) return; if(act==='buy' && item.status!=='Sold') openModal(item);
+    if(act==='copy') navigator.clipboard.writeText(item.username).then(()=>{ btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200); });
   });
+  document.getElementById('copyBtn').addEventListener('click', ()=>{ if(!currentItem) return; navigator.clipboard.writeText(currentItem.username); });
+  document.getElementById('inquiryBtn').addEventListener('click', ()=> document.getElementById('inquiryForm').classList.toggle('hidden'));
+  document.getElementById('sendInquiry').addEventListener('click', ()=>{
+    const msg=(document.getElementById('inquiryText').value||'').trim(); if(!msg||!currentItem) return;
+    document.getElementById('inqStatus').textContent='Opening ticket...';
+    const subject=(document.getElementById('inquirySubject').value||'').trim();
+    const category=document.getElementById('inquiryCategory').value||'General';
+    const contact=(document.getElementById('inquiryContact').value||'').trim();
+    const { id, token } = api.openTicket(currentItem.id, subject, category, contact, msg);
+    const link = `#ticket=${id}:${token}`;
+    document.getElementById('inqStatus').innerHTML=`Ticket opened. <a class="underline" href="${link}">Open your ticket</a>`;
+    navigator.clipboard?.writeText(location.origin + location.pathname + link).catch(()=>{});
+  });
+
+  document.getElementById('loginBtn').addEventListener('click', openLogin);
+  document.getElementById('heroLoginBtn').addEventListener('click', openLogin);
+  document.getElementById('loginForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    const fd=new FormData(document.getElementById('loginForm'));
+    const u=String(fd.get('email')||'').trim().toLowerCase(), p=String(fd.get('pass')||'');
+    if((u==='mohamed'||u==='mohamed@local.dev') && p==='Mm322610@123'){ isStaff=true; closeLogin(); openAdmin(); }
+    else alert('Invalid credentials');
+  });
+
+  document.getElementById('addListingBtn').addEventListener('click', e=>{ e.preventDefault(); openAdmin(); });
+  document.getElementById('refreshBtn').addEventListener('click', refreshAdminList);
+  document.getElementById('addForm').addEventListener('submit', e=>{
+    e.preventDefault(); if(!isStaff){ openLogin(); return; }
+    const fd=new FormData(document.getElementById('addForm'));
+    const item={ username:String(fd.get('username')||'').trim(), platform:fd.get('platform'), price:Number(fd.get('price')||0), tags:String(fd.get('tags')||'').split(',').map(s=>s.trim()).filter(Boolean), status:fd.get('status') };
+    api.addListing(item); document.getElementById('addForm').reset(); refreshAdminList(); renderCatalog();
+  });
+  document.getElementById('adminList').addEventListener('click', e=>{
+    const btn=e.target.closest('button[data-action="del"]'); if(!btn) return;
+    const id=btn.getAttribute('data-id'); if(!confirm('Delete this listing?')) return;
+    api.deleteListing(id); refreshAdminList(); renderCatalog();
+  });
+
+  document.getElementById('tabListings').addEventListener('click', ()=> showTab('listings'));
+  document.getElementById('tabChats').addEventListener('click', ()=> { showTab('chats'); loadChats(); });
+  document.getElementById('chatsList').addEventListener('click', e=>{ const b=e.target.closest('button[data-thread]'); if(!b) return; openThread(b.getAttribute('data-thread')); });
+  document.getElementById('sendReply').addEventListener('click', replyToThread);
+  document.getElementById('closeTicket').addEventListener('click', closeThread);
+  document.getElementById('reopenTicket').addEventListener('click', reopenThread);
+
+  window.addEventListener('hashchange', maybeOpenPortalFromHash);
+  renderCatalog(); maybeOpenPortalFromHash();
   </script>
 
   <section class="max-w-6xl mx-auto px-4 py-6 text-xs text-zinc-500">
-    <p><strong>Heads-up:</strong> Selling or transferring social handles may violate platform Terms. You are responsible for compliance and safe transfers. Consider escrow and proof-of-ownership before payment.</p>
+    <p><strong>Heads-up:</strong> Selling/transferring social handles may violate platform Terms. You’re responsible for compliance and safe transfers.</p>
   </section>
 </body>
 </html>
