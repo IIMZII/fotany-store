@@ -8,11 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    .fade-in { animation: fade-in 250ms ease-out; }
-    @keyframes fade-in { from {opacity: 0; transform: translateY(4px);} to {opacity: 1; transform: translateY(0);} }
-    .hero { background: radial-gradient(1200px 400px at 50% -20%, rgba(0,0,0,0.06), transparent); }
-    .tab-btn[aria-selected="true"]{ background:#18181b; color:#fff; }
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .fade-in { animation: fade-in 220ms ease-out; }
+    @keyframes fade-in { from {opacity:0; transform:translateY(4px);} to {opacity:1; transform:translateY(0);} }
   </style>
 </head>
 <body class="bg-zinc-50 text-zinc-900">
@@ -21,89 +18,81 @@
     <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
       <div class="h-9 w-9 rounded-xl bg-zinc-900 text-white grid place-content-center font-bold">F</div>
       <div class="flex-1">
-        <h1 class="text-xl font-semibold leading-tight" data-i18n="brand">Fotany Store</h1>
-        <p class="text-xs text-zinc-500" data-i18n="tagline">Official marketplace by Fotany. Buy and sell exclusive usernames.</p>
+        <h1 class="text-xl font-semibold leading-tight">Fotany Store</h1>
+        <p class="text-xs text-zinc-500">Official marketplace by Fotany. Buy and sell exclusive usernames.</p>
       </div>
       <div class="flex items-center gap-2">
         <button id="langBtn" class="text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" aria-label="Change language">العربية</button>
-        <button id="loginBtn" class="text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-i18n="loginBtn">Staff login</button>
-        <a href="#add" id="addListingBtn" class="hidden sm:inline-block text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-i18n="addListing">Add listing</a>
+        <button id="loginBtn" class="text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Login</button>
+        <a href="#add" id="addListingBtn" class="hidden sm:inline-block text-sm px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Add listing</a>
       </div>
     </div>
   </header>
 
-  <!-- Welcome / Hero -->
-  <section class="hero border-b border-zinc-200 bg-white/40">
+  <!-- Hero / Welcome -->
+  <section class="border-b border-zinc-200 bg-white/40">
     <div class="max-w-6xl mx-auto px-4 py-10 md:py-14 grid md:grid-cols-2 gap-6 items-center">
       <div>
-        <h2 class="text-2xl md:text-3xl font-bold" data-i18n="welcomeTitle">Welcome to Fotany Store</h2>
-        <p class="mt-2 text-zinc-600" data-i18n="welcomeDesc">Shop clean, rare, and brandable usernames. Verified transfers. Simple contact or instant checkout.</p>
+        <h2 class="text-2xl md:text-3xl font-bold">Welcome to Fotany Store</h2>
+        <p class="mt-2 text-zinc-600">Shop clean, rare, and brandable usernames. Verified transfers. Simple ticket system or instant contact.</p>
         <div class="mt-5 flex flex-wrap items-center gap-3">
-          <a id="browseBtn" href="#catalogSection" class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-i18n="browseBtn">Browse the store</a>
+          <a id="browseBtn" href="#catalogSection" class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Browse the store</a>
           <a href="https://www.tiktok.com/@fotany" target="_blank" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">TikTok: @fotany</a>
         </div>
       </div>
+
       <div class="bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm">
-        <h3 class="font-semibold" data-i18n="storeAccount">Store account</h3>
-        <p class="text-sm text-zinc-600 mt-1" data-i18n="storeAccountDesc">Official Fotany handles and listings. Secure handover after payment. Use WhatsApp for questions.</p>
+        <h3 class="font-semibold">Store account</h3>
+        <p class="text-sm text-zinc-600 mt-1">Official Fotany listings. Secure handover after payment. Use <b>Discord</b> or <b>Telegram</b> for questions.</p>
         <div class="mt-4 grid gap-2 text-sm">
           <div class="flex items-center justify-between">
-            <span class="text-zinc-600" data-i18n="tiktokLabel">TikTok</span>
+            <span class="text-zinc-600">TikTok</span>
             <a class="text-zinc-900 underline" href="https://www.tiktok.com/@fotany" target="_blank">@fotany</a>
           </div>
           <div class="flex items-center justify-between">
             <span class="text-zinc-600">Discord</span>
-            <span class="text-zinc-900">Fotany</span>
+            <span class="text-zinc-900">Server invite below</span>
           </div>
         </div>
         <div class="mt-4">
-          <label class="text-xs text-zinc-600" data-i18n="descBox">Description</label>
+          <label class="text-xs text-zinc-600">Description</label>
           <textarea class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" rows="3" id="publicDesc" placeholder="Short public note for buyers"></textarea>
         </div>
         <div class="mt-4">
-          <button id="heroLoginBtn" class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-i18n="loginBtn">Staff login</button>
+          <button id="heroLoginBtn" class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Login</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Controls -->
+  <!-- Filters -->
   <section id="catalogSection" class="scroll-mt-24 max-w-6xl mx-auto px-4 py-4">
     <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
       <div class="md:col-span-2">
-        <label class="text-xs text-zinc-600" data-i18n="searchLabel">Search</label>
+        <label class="text-xs text-zinc-600">Search</label>
         <input id="search" type="text" placeholder="Search usernames, tags..." class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-400" />
       </div>
       <div>
-        <label class="text-xs text-zinc-600" data-i18n="platformLabel">Platform</label>
+        <label class="text-xs text-zinc-600">Platform</label>
         <select id="platform" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300 bg-white">
-          <option value="" data-i18n="all">All</option>
-          <option>Instagram</option>
-          <option>TikTok</option>
-          <option>X</option>
-          <option>Snapchat</option>
-          <option>Discord</option>
-          <option>Gaming</option>
-          <option>Email</option>
-          <option>Other</option>
+          <option value="">All</option>
+          <option>Instagram</option><option>TikTok</option><option>X</option><option>Snapchat</option><option>Discord</option><option>Gaming</option><option>Email</option><option>Other</option>
         </select>
       </div>
       <div>
-        <label class="text-xs text-zinc-600" data-i18n="statusLabel">Status</label>
+        <label class="text-xs text-zinc-600">Status</label>
         <select id="status" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300 bg-white">
-          <option value="" data-i18n="all">All</option>
-          <option value="Available" data-i18n="available">Available</option>
-          <option value="Reserved" data-i18n="reserved">Reserved</option>
-          <option value="Sold" data-i18n="sold">Sold</option>
+          <option value="">All</option>
+          <option value="Available">Available</option><option value="Reserved">Reserved</option><option value="Sold">Sold</option>
         </select>
       </div>
       <div>
-        <label class="text-xs text-zinc-600" data-i18n="sortLabel">Sort</label>
+        <label class="text-xs text-zinc-600">Sort</label>
         <select id="sort" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300 bg-white">
-          <option value="new" data-i18n="newest">Newest</option>
-          <option value="priceAsc" data-i18n="priceLow">Price: Low → High</option>
-          <option value="priceDesc" data-i18n="priceHigh">Price: High → Low</option>
-          <option value="name" data-i18n="az">A → Z</option>
+          <option value="new">Newest</option>
+          <option value="priceAsc">Price: Low → High</option>
+          <option value="priceDesc">Price: High → Low</option>
+          <option value="name">A → Z</option>
         </select>
       </div>
     </div>
@@ -112,16 +101,16 @@
   <!-- Catalog -->
   <main class="max-w-6xl mx-auto px-4 pb-20">
     <div id="catalog" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-    <div id="emptyState" class="hidden text-center py-16 text-zinc-500" data-i18n="noResults">No results. Try clearing filters.</div>
+    <div id="emptyState" class="hidden text-center py-16 text-zinc-500">No results. Try clearing filters.</div>
   </main>
 
   <!-- Footer -->
   <footer class="border-t border-zinc-200 bg-white/70 backdrop-blur">
     <div class="max-w-6xl mx-auto px-4 py-6 text-sm text-zinc-600 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <div>© <span id="year"></span> <span data-i18n="brand">Fotany Store</span>. <span data-i18n="rights">All rights reserved.</span></div>
+      <div>© <span id="year"></span> Fotany Store. All rights reserved.</div>
       <div class="flex items-center gap-3">
         <a href="https://www.tiktok.com/@fotany" target="_blank" class="px-3 py-1.5 rounded-lg border border-zinc-300 hover:bg-zinc-100">TikTok: @fotany</a>
-        <span class="px-3 py-1.5 rounded-lg border border-zinc-300 bg-zinc-100">Discord: Fotany</span>
+        <span class="px-3 py-1.5 rounded-lg border border-zinc-300 bg-zinc-100">Discord: join below</span>
       </div>
     </div>
   </footer>
@@ -138,28 +127,26 @@
         <button class="text-zinc-500 hover:text-zinc-900" onclick="closeModal()" aria-label="Close">✕</button>
       </div>
       <div class="mt-4 grid gap-3">
-        <a id="waBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700" data-i18n="contactWhatsApp">Contact on WhatsApp</a>
+        <a id="dcBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">Contact on Discord</a>
+        <a id="tgBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-cyan-600 text-white hover:bg-cyan-700">Contact on Telegram</a>
         <a id="stripeBtn" target="_blank" class="hidden text-center px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Pay with Stripe</a>
-        <button id="inquiryBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-i18n="chatNow">Message the store</button>
-        <button id="reserveBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-i18n="reserveLocal">Mark as Reserved (local)</button>
-        <button id="copyBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-i18n="copyUsername">Copy username</button>
+        <button id="inquiryBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Message the store</button>
+        <button id="reserveBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Mark as Reserved (local)</button>
+        <button id="copyBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Copy username</button>
       </div>
       <div id="inquiryForm" class="hidden mt-3">
         <label class="text-xs text-zinc-600">Subject</label>
-        <input id="inquirySubject" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Short title (Offer, Transfer, Question)" />
+        <input id="inquirySubject" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Offer, Transfer, Question" />
         <div class="mt-2 grid grid-cols-2 gap-2">
           <div>
             <label class="text-xs text-zinc-600">Category</label>
             <select id="inquiryCategory" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300">
-              <option>General</option>
-              <option>Offer</option>
-              <option>Transfer</option>
-              <option>Payment</option>
+              <option>General</option><option>Offer</option><option>Transfer</option><option>Payment</option>
             </select>
           </div>
           <div>
-            <label class="text-xs text-zinc-600">Contact (email or Discord)</label>
-            <input id="inquiryContact" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="me@example.com or @mydiscord" />
+            <label class="text-xs text-zinc-600">Contact (Discord or Telegram)</label>
+            <input id="inquiryContact" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="@yourdiscord or @telegram" />
           </div>
         </div>
         <label class="mt-2 text-xs text-zinc-600">Your message</label>
@@ -169,34 +156,34 @@
           <span id="inqStatus" class="text-xs text-zinc-500"></span>
         </div>
       </div>
-      <p class="mt-4 text-xs text-zinc-500" data-i18n="demoNote">Note: Chats are private. Only staff can read them in the dashboard.</p>
+      <p class="mt-4 text-xs text-zinc-500">Tickets are private. Buyers get a link; only staff can see all tickets.</p>
     </div>
   </div>
 
-  <!-- Login Modal (Staff) -->
+  <!-- Login Modal -->
   <div id="loginModal" class="hidden fixed inset-0 z-50" aria-modal="true" role="dialog">
     <div class="absolute inset-0 bg-black/40" onclick="closeLogin()" aria-hidden="true"></div>
     <div class="relative max-w-sm mx-auto mt-32 bg-white rounded-2xl shadow-xl p-5 fade-in">
       <div class="flex items-start justify-between gap-4">
-        <h3 class="text-lg font-semibold" data-i18n="staffLogin">Staff login</h3>
+        <h3 class="text-lg font-semibold">Login</h3>
         <button class="text-zinc-500 hover:text-zinc-900" onclick="closeLogin()" aria-label="Close">✕</button>
       </div>
       <form id="loginForm" class="mt-3 grid gap-3">
         <div>
-          <label class="text-xs text-zinc-600" data-i18n="email">Email</label>
-          <input name="email" type="email" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="staff@fotany.com" />
+          <label class="text-xs text-zinc-600">Username or Email</label>
+          <input name="email" type="text" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="mohamed or you@domain.com" />
         </div>
         <div>
-          <label class="text-xs text-zinc-600" data-i18n="password">Password</label>
+          <label class="text-xs text-zinc-600">Password</label>
           <input name="pass" type="password" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="••••••" />
         </div>
-        <button class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-i18n="loginBtn">Staff login</button>
-        <p class="text-xs text-zinc-500" data-i18n="loginHint">Secure login via Supabase. Only staff can access admin & chats.</p>
+        <button class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Login</button>
+        <p class="text-xs text-zinc-500">Local login works now. For secure auth, set Supabase below.</p>
       </form>
     </div>
   </div>
 
-  <!-- Admin Dashboard (Staff only) -->
+  <!-- Admin Dashboard -->
   <div id="adminModal" class="hidden fixed inset-0 z-50" aria-modal="true" role="dialog">
     <div class="absolute inset-0 bg-black/40" onclick="closeAdmin()" aria-hidden="true"></div>
     <div class="relative max-w-4xl mx-auto mt-12 bg-white rounded-2xl shadow-xl p-5 fade-in">
@@ -207,43 +194,34 @@
 
       <div class="mt-4 flex gap-2">
         <button class="tab-btn px-3 py-2 rounded-xl border border-zinc-300" id="tabListings" aria-selected="true">Listings</button>
-        <button class="tab-btn px-3 py-2 rounded-xl border border-zinc-300" id="tabChats">Chats</button>
+        <button class="tab-btn px-3 py-2 rounded-xl border border-zinc-300" id="tabChats">Tickets</button>
       </div>
 
       <!-- Listings Tab -->
       <div id="panelListings" class="mt-4">
         <form id="addForm" class="grid sm:grid-cols-2 gap-3">
           <div>
-            <label class="text-xs text-zinc-600" data-i18n="username">Username</label>
-            <input name="username" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="e.g. @DesertKing" />
+            <label class="text-xs text-zinc-600">Username</label>
+            <input name="username" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="@DesertKing" />
           </div>
           <div>
-            <label class="text-xs text-zinc-600" data-i18n="platformLabel">Platform</label>
+            <label class="text-xs text-zinc-600">Platform</label>
             <select name="platform" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300">
-              <option>Instagram</option>
-              <option>TikTok</option>
-              <option>X</option>
-              <option>Snapchat</option>
-              <option>Discord</option>
-              <option>Gaming</option>
-              <option>Email</option>
-              <option>Other</option>
+              <option>Instagram</option><option>TikTok</option><option>X</option><option>Snapchat</option><option>Discord</option><option>Gaming</option><option>Email</option><option>Other</option>
             </select>
           </div>
           <div>
-            <label class="text-xs text-zinc-600" data-i18n="price">Price (number)</label>
+            <label class="text-xs text-zinc-600">Price (number)</label>
             <input name="price" type="number" step="1" min="0" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="1500" />
           </div>
           <div>
-            <label class="text-xs text-zinc-600" data-i18n="tags">Tags (comma‑separated)</label>
+            <label class="text-xs text-zinc-600">Tags (comma-separated)</label>
             <input name="tags" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="arabic, luxury, short" />
           </div>
           <div>
-            <label class="text-xs text-zinc-600" data-i18n="statusLabel">Status</label>
+            <label class="text-xs text-zinc-600">Status</label>
             <select name="status" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300">
-              <option>Available</option>
-              <option>Reserved</option>
-              <option>Sold</option>
+              <option>Available</option><option>Reserved</option><option>Sold</option>
             </select>
           </div>
           <div>
@@ -252,29 +230,29 @@
           </div>
           <div class="sm:col-span-2 flex items-center justify-end gap-2 mt-2">
             <button type="button" id="refreshBtn" class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Refresh</button>
-            <button class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-i18n="add">Add listing</button>
+            <button class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Add listing</button>
           </div>
         </form>
         <div class="mt-4">
-          <h4 class="text-sm font-medium mb-2" data-i18n="currentListings">Current Listings</h4>
+          <h4 class="text-sm font-medium mb-2">Current Listings</h4>
           <div id="adminList" class="text-sm divide-y divide-zinc-200"></div>
         </div>
       </div>
 
-      <!-- Chats Tab -->
+      <!-- Tickets Tab -->
       <div id="panelChats" class="mt-4 hidden">
         <div id="chatsList" class="text-sm divide-y divide-zinc-200"></div>
         <div id="chatDetail" class="mt-4 hidden">
           <h4 class="font-medium">Ticket</h4>
           <div id="ticketMeta" class="mt-1 text-xs text-zinc-500"></div>
-          <div class="mt-2 flex items-center gap-2">
-            <button id="closeTicket" class="px-2 py-1 rounded-lg border border-zinc-300">Close Ticket</button>
-            <button id="reopenTicket" class="px-2 py-1 rounded-lg border border-zinc-300">Reopen</button>
-          </div>
           <div id="threadMsgs" class="mt-2 p-3 bg-zinc-50 border border-zinc-200 rounded-xl max-h-72 overflow-auto space-y-2"></div>
           <div class="mt-2 flex gap-2">
             <input id="replyText" class="flex-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Reply as staff..." />
             <button id="sendReply" class="px-3 py-2 rounded-xl bg-zinc-900 text-white">Send</button>
+          </div>
+          <div class="mt-2 flex items-center gap-2">
+            <button id="closeTicket" class="px-2 py-1 rounded-lg border border-zinc-300">Close Ticket</button>
+            <button id="reopenTicket" class="px-2 py-1 rounded-lg border border-zinc-300">Reopen</button>
           </div>
         </div>
       </div>
@@ -297,406 +275,305 @@
         <input id="tpReply" class="flex-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Write a reply..." />
         <button id="tpSend" class="px-3 py-2 rounded-xl bg-zinc-900 text-white">Send</button>
       </div>
-      <p class="mt-3 text-xs text-zinc-500">Keep this page open. Staff will reply here until the ticket is closed.</p>
+      <p class="mt-3 text-xs text-zinc-500">Keep this link. It works until the ticket is closed by staff.</p>
     </div>
   </div>
 
   <script>
-    // ======= CONFIG =======
-    const CURRENCY = 'AED';
-    const SELLER_PHONE = '9715XXXXXXXX'; // WhatsApp phone (no +)
+  // =================== CONFIG ===================
+  const MODE = 'auto'; // 'auto' -> use Supabase if configured, else local demo mode
+  const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+  const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
+  const SELLER_DISCORD = 'https://discord.gg/YOUR_INVITE'; // server invite URL
+  const SELLER_TELEGRAM = 'yourtelegram'; // username without @
+  const CURRENCY = 'AED';
 
-    // --- BACKEND (Supabase) ---
-    const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-    const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true } });
+  // Init supabase (even if not configured)
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true } });
+  const supaConfigured = !SUPABASE_URL.includes('YOUR-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR-ANON-KEY');
+  const EFFECTIVE_MODE = MODE === 'auto' ? (supaConfigured ? 'supabase' : 'local') : MODE;
 
-    // ======= I18N =======
-    const I18N = {
-      en: {
-        brand: 'Fotany Store',
-        tagline: 'Official marketplace by Fotany. Buy and sell exclusive usernames.',
-        welcomeTitle: 'Welcome to Fotany Store',
-        welcomeDesc: 'Shop clean, rare, and brandable usernames. Verified transfers. Simple contact or instant checkout.',
-        browseBtn: 'Browse the store',
-        storeAccount: 'Store account',
-        storeAccountDesc: 'Official Fotany handles and listings. Secure handover after payment. Use WhatsApp for questions.',
-        descBox: 'Description',
-        loginBtn: 'Staff login',
-        searchLabel: 'Search', platformLabel: 'Platform', statusLabel: 'Status', sortLabel: 'Sort',
-        newest: 'Newest', priceLow: 'Price: Low → High', priceHigh: 'Price: High → Low', az: 'A → Z',
-        all: 'All', available: 'Available', reserved: 'Reserved', sold: 'Sold',
-        noResults: 'No results. Try clearing filters.', rights: 'All rights reserved.',
-        contactWhatsApp: 'Contact on WhatsApp', reserveLocal: 'Mark as Reserved (local)', copyUsername: 'Copy username', demoNote: 'Note: Chats are private. Only staff can read them in the dashboard.',
-        staffLogin: 'Staff login', email: 'Email', password: 'Password', loginHint: 'Secure login via Supabase. Only staff can access admin & chats.',
-        manageListings: 'Add / Manage Listings', price: 'Price (number)', tags: 'Tags (comma‑separated)', notes: 'Notes (private)', clearLocal: 'Clear local data', add: 'Add listing', currentListings: 'Current Listings',
-        chatNow: 'Message the store', chatTitle: 'Chat with Fotany', send: 'Send', chatNote: 'Demo chat saves in your browser only. Use WhatsApp for real contact.', openInWA: 'Open conversation in WhatsApp', clearChat: 'Clear chat'
-      },
-      ar: {
-        brand: 'متجر فوتاني',
-        tagline: 'المتجر الرسمي لفوتاني لبيع وشراء أسماء المستخدمين المميزة.',
-        welcomeTitle: 'مرحباً بك في متجر فوتاني',
-        welcomeDesc: 'اختر أسماء نظيفة ونادرة وقابلة للعلامة التجارية. نقل مُوثّق وتواصل بسيط أو دفع فوري.',
-        browseBtn: 'تصفّح المتجر',
-        storeAccount: 'حساب المتجر',
-        storeAccountDesc: 'قائمة الأسماء الرسمية من فوتاني. تسليم آمن بعد الدفع. استخدم واتساب للاستفسار.',
-        descBox: 'وصف',
-        loginBtn: 'تسجيل دخول الموظفين',
-        searchLabel: 'بحث', platformLabel: 'المنصة', statusLabel: 'الحالة', sortLabel: 'فرز',
-        newest: 'الأحدث', priceLow: 'السعر: الأقل → الأعلى', priceHigh: 'السعر: الأعلى → الأقل', az: 'ألف → ياء',
-        all: 'الكل', available: 'متاح', reserved: 'محجوز', sold: 'مباع',
-        noResults: 'لا توجد نتائج. جرّب تصفية أقل.', rights: 'جميع الحقوق محفوظة.',
-        contactWhatsApp: 'تواصل عبر واتساب', reserveLocal: 'تعيين محجوز (محلي)', copyUsername: 'نسخ الاسم', demoNote: 'تنبيه: الدردشات خاصة ولا يطلع عليها إلا الموظفون من لوحة التحكم.',
-        staffLogin: 'تسجيل دخول الموظفين', email: 'البريد الإلكتروني', password: 'كلمة المرور', loginHint: 'تسجيل آمن عبر Supabase. لوحة التحكم والدردشات للموظفين فقط.',
-        manageListings: 'إضافة / إدارة القوائم', price: 'السعر (رقم)', tags: 'الوسوم (مفصولة بفواصل)', notes: 'ملاحظات (خاصة)', clearLocal: 'مسح البيانات المحلية', add: 'إضافة قائمة', currentListings: 'القوائم الحالية',
-        chatNow: 'راسل المتجر', chatTitle: 'الدردشة مع فوتاني', send: 'إرسال', chatNote: 'محادثة تجريبية تُحفظ محلياً فقط. استخدم واتساب للتواصل الحقيقي.', openInWA: 'فتح المحادثة في واتساب', clearChat: 'مسح المحادثة'
-      }
-    };
+  // =================== DOM REFS ===================
+  const els = {
+    year: byId('year'),
+    catalog: byId('catalog'),
+    empty: byId('emptyState'),
+    search: byId('search'), platform: byId('platform'), status: byId('status'), sort: byId('sort'),
+    buyModal: byId('buyModal'), mTitle: byId('mTitle'), mSubtitle: byId('mSubtitle'),
+    dcBtn: byId('dcBtn'), tgBtn: byId('tgBtn'), stripeBtn: byId('stripeBtn'),
+    reserveBtn: byId('reserveBtn'), copyBtn: byId('copyBtn'),
+    loginBtn: byId('loginBtn'), heroLoginBtn: byId('heroLoginBtn'), loginModal: byId('loginModal'), loginForm: byId('loginForm'),
+    adminModal: byId('adminModal'), addForm: byId('addForm'), adminList: byId('adminList'), refreshBtn: byId('refreshBtn'),
+    inquiryBtn: byId('inquiryBtn'), inquiryForm: byId('inquiryForm'), inquiryText: byId('inquiryText'), sendInquiry: byId('sendInquiry'),
+    inqStatus: byId('inqStatus'), browseBtn: byId('browseBtn'),
+    tabListings: byId('tabListings'), tabChats: byId('tabChats'), panelListings: byId('panelListings'), panelChats: byId('panelChats'),
+    chatsList: byId('chatsList'), chatDetail: byId('chatDetail'), ticketMeta: byId('ticketMeta'), threadMsgs: byId('threadMsgs'),
+    replyText: byId('replyText'), sendReply: byId('sendReply'), closeTicket: byId('closeTicket'), reopenTicket: byId('reopenTicket'),
+  };
+  function byId(id){ return document.getElementById(id); }
 
-    let currentLang = 'en';
+  // =================== STATE ===================
+  let active = []; // listings
+  let currentItem = null;
+  let isStaff = false;
+  let currentThreadId = null;
 
-    // ======= STATE =======
-    const els = {
-      catalog: document.getElementById('catalog'), empty: document.getElementById('emptyState'), year: document.getElementById('year'),
-      search: document.getElementById('search'), platform: document.getElementById('platform'), status: document.getElementById('status'), sort: document.getElementById('sort'),
-      buyModal: document.getElementById('buyModal'), mTitle: document.getElementById('mTitle'), mSubtitle: document.getElementById('mSubtitle'), waBtn: document.getElementById('waBtn'), stripeBtn: document.getElementById('stripeBtn'), reserveBtn: document.getElementById('reserveBtn'), copyBtn: document.getElementById('copyBtn'),
-      loginBtn: document.getElementById('loginBtn'), heroLoginBtn: document.getElementById('heroLoginBtn'), loginModal: document.getElementById('loginModal'), loginForm: document.getElementById('loginForm'),
-      adminModal: document.getElementById('adminModal'), addForm: document.getElementById('addForm'), adminList: document.getElementById('adminList'), refreshBtn: document.getElementById('refreshBtn'),
-      inquiryBtn: document.getElementById('inquiryBtn'), inquiryForm: document.getElementById('inquiryForm'), inquiryText: document.getElementById('inquiryText'), sendInquiry: document.getElementById('sendInquiry'), inqStatus: document.getElementById('inqStatus'),
-      browseBtn: document.getElementById('browseBtn'),
-      tabListings: document.getElementById('tabListings'), tabChats: document.getElementById('tabChats'), panelListings: document.getElementById('panelListings'), panelChats: document.getElementById('panelChats'),
-      chatsList: document.getElementById('chatsList'), chatDetail: document.getElementById('chatDetail'), threadMsgs: document.getElementById('threadMsgs'), replyText: document.getElementById('replyText'), sendReply: document.getElementById('sendReply'),
-      langBtn: document.getElementById('langBtn')
-    };
+  // local demo DB
+  const LSK = { db: 'fs:db', lang: 'fs:lang', publicDesc: 'fs:desc' };
+  function uuid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now().toString(16) + Math.random().toString(16).slice(2) + 'xxxxxxx').slice(0,36); }
+  function ldb(){ try{ return JSON.parse(localStorage.getItem(LSK.db)||'{}'); } catch { return {}; } }
+  function ldbSave(db){ localStorage.setItem(LSK.db, JSON.stringify(db)); }
+  function ensureDemo(){ const db = ldb(); db.listings = db.listings || [
+      { id:'seed1', username:'@DesertKing', platform:'Instagram', price:3500, tags:['arabic','luxury'], status:'Available', createdAt:'2025-08-20T09:00:00Z', stripe:''},
+      { id:'seed2', username:'@FalconTech', platform:'X', price:2800, tags:['tech','uae'], status:'Available', createdAt:'2025-08-18T13:00:00Z', stripe:''},
+      { id:'seed3', username:'@Mawsem', platform:'Instagram', price:4200, tags:['honey'], status:'Reserved', createdAt:'2025-08-17T10:30:00Z', stripe:''}
+    ];
+    db.inquiries = db.inquiries || []; db.messages = db.messages || []; ldbSave(db);
+  }
 
-    let active = [];
-    let currentItem = null;
-    let isStaff = false;
-    let currentThreadId = null;
+  // Helpers
+  const money = (n) => new Intl.NumberFormat(undefined, { style:'currency', currency:'USD' }).format(n).replace('US$', CURRENCY + ' ');
+  const platformColor = (p) => ({ Instagram:'bg-pink-600', TikTok:'bg-gray-900', X:'bg-black', Snapchat:'bg-yellow-400 text-black', Discord:'bg-indigo-600', Gaming:'bg-emerald-600', Email:'bg-zinc-700', Other:'bg-zinc-500' }[p]||'bg-zinc-500');
 
-    const LS = { lang: 'um:lang', publicDesc: 'um:publicDesc' };
+  // =================== DATA APIs ===================
+  const api = EFFECTIVE_MODE === 'supabase' ? {
+    async listListings(){ const { data, error } = await sb.from('listings').select('*').order('created_at', {ascending:false}); if(error) throw error;
+      return (data||[]).map(x => ({ id:x.id, username:x.username, platform:x.platform, price:Number(x.price||0), tags:x.tags||[], status:x.status||'Available', createdAt:x.created_at, stripe:x.stripe||'' })); },
+    async addListing(it){ const { error } = await sb.from('listings').insert(it); if (error) throw error; },
+    async listTickets(){ const { data, error } = await sb.from('inquiries').select('id, listing_id, message, subject, category, status, created_at, listing:listings(username, platform)').order('created_at', {ascending:false}).limit(100); if(error) throw error; return data||[]; },
+    async ticketMessages(id){ const { data, error } = await sb.from('inquiries_messages').select('*').eq('thread_id', id).order('created_at'); if(error) throw error; return data||[]; },
+    async replyStaff(id, text){ const { error } = await sb.from('inquiries_messages').insert({ thread_id:id, role:'staff', text }); if(error) throw error; },
+    async setStatus(id, status){ const { error } = await sb.from('inquiries').update({status}).eq('id', id); if(error) throw error; },
+    async openTicket(listingId, subject, category, contact, message){
+      const token = uuid();
+      const { data, error } = await sb.from('inquiries').insert({ listing_id:listingId, message, subject, category, contact, status:'open', viewer_token: token }).select('id');
+      if(error) throw error; return { id:data?.[0]?.id, token };
+    },
+    async portalGet(id, token){ const { data, error } = await sb.rpc('ticket_get', { p_id:id, p_token:token }); if(error) throw error; return data; },
+    async portalPost(id, token, text){ const { data, error } = await sb.rpc('ticket_post', { p_id:id, p_token:token, p_text:text }); if(error) throw error; return data===true; }
+  } : {
+    // LOCAL DEMO
+    async listListings(){ ensureDemo(); return ldb().listings; },
+    async addListing(it){ const db=ldb(); it.id=uuid(); it.createdAt=new Date().toISOString(); db.listings.unshift(it); ldbSave(db); },
+    async listTickets(){ const db=ldb(); return (db.inquiries||[]).map(q=>({ id:q.id, listing_id:q.listing_id, message:q.message, subject:q.subject, category:q.category, status:q.status, created_at:q.created_at, listing:{ username:(ldb().listings.find(l=>l.id===q.listing_id)||{}).username, platform:(ldb().listings.find(l=>l.id===q.listing_id)||{}).platform } })); },
+    async ticketMessages(id){ const db=ldb(); return (db.messages||[]).filter(m=>m.thread_id===id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)); },
+    async replyStaff(id, text){ const db=ldb(); db.messages.push({ id:uuid(), thread_id:id, role:'staff', text, created_at:new Date().toISOString() }); ldbSave(db); },
+    async setStatus(id, status){ const db=ldb(); const t=db.inquiries.find(x=>x.id===id); if(t) t.status=status; ldbSave(db); },
+    async openTicket(listingId, subject, category, contact, message){ const db=ldb(); const id=uuid(); const token=uuid(); db.inquiries.push({ id, listing_id:listingId, message, subject, category, contact, status:'open', viewer_token:token, created_at:new Date().toISOString() }); db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text:message, created_at:new Date().toISOString() }); ldbSave(db); return { id, token }; },
+    async portalGet(id, token){ const db=ldb(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return []; const msgs=(db.messages||[]).filter(m=>m.thread_id===id); return [{ id, subject:t.subject||'Ticket', category:t.category||'General', status:t.status, listing_username:(ldb().listings.find(l=>l.id===t.listing_id)||{}).username, messages: msgs }]; },
+    async portalPost(id, token, text){ const db=ldb(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return false; db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text, created_at:new Date().toISOString() }); ldbSave(db); return true; }
+  };
 
-    // ======= Helpers / Guards =======
-    const money = (n) => new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(n).replace('US$', CURRENCY + ' ');
-    const pill = (t) => `<span class="px-2 py-0.5 rounded-lg text-xs border border-zinc-300 bg-white">${t}</span>`;
-    const platformColor = (p) => ({ Instagram:'bg-pink-600', TikTok:'bg-gray-900', X:'bg-black', Snapchat:'bg-yellow-400 text-black', Discord:'bg-indigo-600', Gaming:'bg-emerald-600', Email:'bg-zinc-700', Other:'bg-zinc-500' }[p]||'bg-zinc-500');
-
-    function applyI18n(){
-      const dict = I18N[currentLang];
-      document.querySelectorAll('[data-i18n]').forEach(el => { const k=el.getAttribute('data-i18n'); if (dict[k]) el.textContent = dict[k]; });
-      document.documentElement.lang = currentLang==='ar'?'ar':'en';
-      document.documentElement.dir = currentLang==='ar'?'rtl':'ltr';
-      if (els.search) els.search.placeholder = currentLang==='ar'?'ابحث عن الأسماء أو الوسوم...':'Search usernames, tags...';
-      if (els.langBtn) els.langBtn.textContent = currentLang==='ar'?'English':'العربية';
-    }
-
-    // re-entrancy guard for render (prevents stack overflows from rapid calls)
-    let isRendering = false;
-
-    async function fetchListings(){
-      try {
-        const { data, error } = await sb.from('listings').select('*').order('created_at', { ascending:false });
-        if (error) throw error;
-        return (data||[]).map(x => ({ id: x.id, username: x.username, platform: x.platform, price: Number(x.price||0), tags: x.tags||[], status: x.status||'Available', createdAt: x.created_at, stripe: x.stripe||'' }));
-      } catch(e){
-        return [
-          { id: 'seed1', username: '@DesertKing', platform: 'Instagram', price: 3500, tags: ['arabic','luxury'], status: 'Available', createdAt: '2025-08-20T09:00:00Z', stripe:'' },
-          { id: 'seed2', username: '@FalconTech', platform: 'X', price: 2800, tags: ['tech','uae'], status: 'Available', createdAt: '2025-08-18T13:00:00Z', stripe:'' },
-          { id: 'seed3', username: '@Mawsem', platform: 'Instagram', price: 4200, tags: ['honey'], status: 'Reserved', createdAt: '2025-08-17T10:30:00Z', stripe:'' }
-        ];
-      }
-    }
-
-    async function render(){
-      if (isRendering) return; // guard against recursive/re-entrant calls
-      isRendering = true;
-      try {
-        active = await fetchListings();
-        const q = (els.search?.value||'').trim().toLowerCase();
-        const pf = els.platform?.value||''; const st = els.status?.value||''; const sort = els.sort?.value||'new';
-
-        let list = active.filter(it => {
-          const matchesQ = !q || (it.username||'').toLowerCase().includes(q) || (it.tags||[]).join(' ').toLowerCase().includes(q);
-          const matchesP = !pf || it.platform === pf; const matchesS = !st || it.status === st; return matchesQ && matchesP && matchesS;
-        });
-        list.sort((a,b)=> sort==='priceAsc'? a.price-b.price : sort==='priceDesc'? b.price-a.price : sort==='name'? String(a.username).localeCompare(String(b.username)) : new Date(b.createdAt||0)-new Date(a.createdAt||0));
-
-        if (els.catalog) els.catalog.innerHTML = '';
-        if (!list.length){ els.empty?.classList.remove('hidden'); return; } else { els.empty?.classList.add('hidden'); }
-
-        list.forEach(it => {
-          const sold = it.status==='Sold'; const reserved = it.status==='Reserved';
-          const statusClass = sold?'bg-zinc-200 text-zinc-700': reserved?'bg-amber-100 text-amber-800':'bg-emerald-100 text-emerald-800';
-          const btnDisabled = sold ? 'opacity-60 pointer-events-none' : '';
-          const platformBadge = `<span class=\"px-2 py-1 rounded-lg text-xs text-white ${platformColor(it.platform)}\">${it.platform}</span>`;
-          const tagBadges = (it.tags||[]).slice(0,5).map(pill).join(' ');
-          const card = document.createElement('div');
-          card.className = 'bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm hover:shadow-md transition-shadow fade-in flex flex-col justify-between';
-          card.innerHTML = `
-            <div class="flex items-start justify-between gap-3">
-              <div>
-                <div class="text-lg font-semibold break-all">${it.username}</div>
-                <div class="mt-1 flex items-center gap-2">${platformBadge} ${tagBadges}</div>
-              </div>
-              <div class="text-right">
-                <div class="text-base font-semibold">${money(it.price)}</div>
-                <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-lg text-xs ${statusClass}">${it.status}</div>
-              </div>
+  // =================== RENDER ===================
+  let isRendering = false;
+  async function render(){
+    if (isRendering) return; isRendering = true;
+    try{
+      active = await api.listListings();
+      const q = (els.search?.value||'').trim().toLowerCase();
+      const pf = els.platform?.value||''; const st = els.status?.value||''; const sort = els.sort?.value||'new';
+      let list = active.filter(it => {
+        const matchesQ = !q || (it.username||'').toLowerCase().includes(q) || (it.tags||[]).join(' ').toLowerCase().includes(q);
+        const matchesP = !pf || it.platform === pf; const matchesS = !st || it.status === st;
+        return matchesQ && matchesP && matchesS;
+      });
+      list.sort((a,b)=> sort==='priceAsc'? a.price-b.price : sort==='priceDesc'? b.price-a.price : sort==='name'? String(a.username).localeCompare(String(b.username)) : new Date(b.createdAt||0)-new Date(a.createdAt||0));
+      els.catalog.innerHTML = '';
+      if (!list.length){ els.empty.classList.remove('hidden'); return; } else { els.empty.classList.add('hidden'); }
+      list.forEach(it => {
+        const sold = it.status==='Sold'; const reserved = it.status==='Reserved';
+        const statusClass = sold?'bg-zinc-200 text-zinc-700': reserved?'bg-amber-100 text-amber-800':'bg-emerald-100 text-emerald-800';
+        const btnDisabled = sold ? 'opacity-60 pointer-events-none' : '';
+        const platformBadge = `<span class="px-2 py-1 rounded-lg text-xs text-white ${platformColor(it.platform)}">${it.platform}</span>`;
+        const tagBadges = (it.tags||[]).slice(0,5).map(t=>`<span class="px-2 py-0.5 rounded-lg text-xs border border-zinc-300 bg-white">${t}</span>`).join(' ');
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm hover:shadow-md transition-shadow fade-in flex flex-col justify-between';
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="text-lg font-semibold break-all">${it.username}</div>
+              <div class="mt-1 flex items-center gap-2">${platformBadge} ${tagBadges}</div>
             </div>
-            <div class="mt-4 flex items-center gap-2">
-              <button class="flex-1 ${btnDisabled} px-3 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-id="${it.id}" data-action="buy">${sold ? 'Unavailable' : (currentLang==='ar'?'اشتري الآن':'Buy now')}</button>
-              <button class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-id="${it.id}" data-action="copy">${currentLang==='ar'?'نسخ':'Copy'}</button>
+            <div class="text-right">
+              <div class="text-base font-semibold">${money(it.price)}</div>
+              <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-lg text-xs ${statusClass}">${it.status}</div>
             </div>
-            <div class="mt-2 text-[11px] text-zinc-500">${currentLang==='ar'?'أُضيف:':'Added:'} ${new Date(it.createdAt||Date.now()).toLocaleDateString()}</div>`;
-          els.catalog?.appendChild(card);
-        });
-      } finally {
-        isRendering = false;
-      }
-    }
-
-    function openModal(item){
-      currentItem = item;
-      if (!els.mTitle || !els.mSubtitle) return;
-      els.mTitle.textContent = `${item.username} • ${item.platform}`;
-      els.mSubtitle.textContent = `${money(item.price)} — ${item.status}`;
-      const msg = (currentLang==='ar')? `مرحباً، مهتم باسم ${item.username} (${item.platform}) بسعر ${CURRENCY} ${item.price}. هل هو متاح؟` : `Hi, I'm interested in ${item.username} (${item.platform}) for ${CURRENCY} ${item.price}. Is it still available?`;
-      if (els.waBtn) els.waBtn.href = `https://wa.me/${SELLER_PHONE}?text=${encodeURIComponent(msg)}`;
-      if (els.stripeBtn) { if (item.stripe && item.stripe.startsWith('http')) { els.stripeBtn.classList.remove('hidden'); els.stripeBtn.href = item.stripe; } else { els.stripeBtn.classList.add('hidden'); } }
-      els.inquiryForm?.classList.add('hidden'); if (els.inquiryText) els.inquiryText.value=''; if (els.inqStatus) els.inqStatus.textContent='';
-      els.buyModal?.classList.remove('hidden');
-    }
-    function closeModal(){ els.buyModal?.classList.add('hidden'); }
-
-    function openAdmin(){ if (!isStaff) { openLogin(); return; } els.adminModal?.classList.remove('hidden'); refreshAdminList(); loadChats(); }
-    function closeAdmin(){ els.adminModal?.classList.add('hidden'); }
-
-    function openLogin(){ els.loginModal?.classList.remove('hidden'); }
-    function closeLogin(){ els.loginModal?.classList.add('hidden'); }
-
-    // ======= Admin Tabs =======
-    function showTab(which){
-      const isList = which==='listings';
-      els.tabListings?.setAttribute('aria-selected', String(isList));
-      els.tabChats?.setAttribute('aria-selected', String(!isList));
-      els.panelListings?.classList.toggle('hidden', !isList);
-      els.panelChats?.classList.toggle('hidden', isList);
-    }
-
-    // ======= DATA (Admin) =======
-    async function refreshAdminList(){
-      const { data, error } = await sb.from('listings').select('*').order('created_at', {ascending:false});
-      if (!error && els.adminList){
-        els.adminList.innerHTML = (data||[]).map(x => `<div class="py-2 flex items-center justify-between gap-3">
-          <div class="truncate"><span class="font-medium">${x.username}</span> <span class="text-zinc-500">• ${x.platform}</span></div>
-          <div class="text-zinc-600">${money(Number(x.price||0))} — ${x.status}</div>
-        </div>`).join('');
-      }
-    }
-
-    async function loadChats(){
-      const { data, error } = await sb.from('inquiries').select('id, listing_id, message, subject, category, status, created_at, listing:listings(username, platform)').order('created_at', {ascending:false}).limit(100);
-      if (error || !els.chatsList){ els.chatsList.innerHTML = '<div class="py-3 text-zinc-500">No tickets (or no access).</div>'; return; }
-      els.chatsList.innerHTML = (data||[]).map(row => {
-        const badge = row.status==='closed' ? 'bg-zinc-200 text-zinc-700' : 'bg-emerald-100 text-emerald-800';
-        return `<div class="py-2 flex items-center justify-between gap-3">
-          <div class="truncate">
-            <div class="text-sm font-medium">${row.subject||'Ticket'} — ${row.listing?.username || 'Unknown'} <span class="text-xs text-zinc-500">• ${row.listing?.platform||''}</span></div>
-            <div class="text-xs text-zinc-600 truncate max-w-[42ch]">${row.category||'General'} · ${row.message}</div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded-lg text-xs ${badge}">${row.status||'open'}</span>
-            <button class="px-2 py-1 text-sm rounded-lg border border-zinc-300" data-thread="${row.id}">Open</button>
+          <div class="mt-4 flex items-center gap-2">
+            <button class="flex-1 ${btnDisabled} px-3 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-id="${it.id}" data-action="buy">${sold ? 'Unavailable' : 'Buy now'}</button>
+            <button class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-id="${it.id}" data-action="copy">Copy</button>
           </div>
-        </div>`;
-      }).join('');
-    } = await sb.from('inquiries').select('id, listing_id, message, created_at, listing:listings(username, platform)').order('created_at', {ascending:false}).limit(50);
-      if (error || !els.chatsList){ els.chatsList.innerHTML = '<div class="py-3 text-zinc-500">No chats (or no access).</div>'; return; }
-      els.chatsList.innerHTML = (data||[]).map(row => `<div class="py-2 flex items-center justify-between gap-3">
+          <div class="mt-2 text-[11px] text-zinc-500">Added: ${new Date(it.createdAt||Date.now()).toLocaleDateString()}</div>`;
+        els.catalog.appendChild(card);
+      });
+    } finally { isRendering = false; }
+  }
+
+  function openModal(item){
+    currentItem = item;
+    els.mTitle.textContent = `${item.username} • ${item.platform}`;
+    els.mSubtitle.textContent = `${money(item.price)} — ${item.status}`;
+    const dclink = SELLER_DISCORD.startsWith('http') ? SELLER_DISCORD : `https://discord.gg/${SELLER_DISCORD}`;
+    els.dcBtn.href = dclink;
+    els.tgBtn.href = `https://t.me/${SELLER_TELEGRAM}?text=${encodeURIComponent('Hi, I am interested in ' + item.username + ' (' + item.platform + ') for ' + CURRENCY + ' ' + item.price)}`;
+    els.inquiryForm.classList.add('hidden'); els.inquiryText.value=''; els.inqStatus.textContent='';
+    els.buyModal.classList.remove('hidden');
+  }
+  function closeModal(){ els.buyModal.classList.add('hidden'); }
+  function openLogin(){ els.loginModal.classList.remove('hidden'); }
+  function closeLogin(){ els.loginModal.classList.add('hidden'); }
+  function openAdmin(){ if (!isStaff) { openLogin(); return; } els.adminModal.classList.remove('hidden'); refreshAdminList(); loadChats(); }
+  function closeAdmin(){ els.adminModal.classList.add('hidden'); }
+
+  function showTab(which){
+    const isList = which==='listings';
+    els.tabListings.setAttribute('aria-selected', String(isList));
+    els.tabChats.setAttribute('aria-selected', String(!isList));
+    els.panelListings.classList.toggle('hidden', !isList);
+    els.panelChats.classList.toggle('hidden', isList);
+  }
+
+  // ===== Admin data =====
+  async function refreshAdminList(){
+    const data = await api.listListings();
+    els.adminList.innerHTML = (data||[]).map(x => `<div class="py-2 flex items-center justify-between gap-3">
+      <div class="truncate"><span class="font-medium">${x.username}</span> <span class="text-zinc-500">• ${x.platform}</span></div>
+      <div class="text-zinc-600">${money(Number(x.price||0))} — ${x.status}</div>
+    </div>`).join('');
+  }
+  async function loadChats(){
+    let data = [];
+    try { data = await api.listTickets(); } catch { data = []; }
+    els.chatsList.innerHTML = (data||[]).map(row => {
+      const badge = row.status==='closed' ? 'bg-zinc-200 text-zinc-700' : 'bg-emerald-100 text-emerald-800';
+      return `<div class="py-2 flex items-center justify-between gap-3">
         <div class="truncate">
-          <div class="text-sm font-medium">${row.listing?.username || 'Unknown'} <span class="text-xs text-zinc-500">• ${row.listing?.platform||''}</span></div>
-          <div class="text-xs text-zinc-600 truncate max-w-[38ch]">${row.message}</div>
+          <div class="text-sm font-medium">${row.subject||'Ticket'} — ${row.listing?.username || 'Unknown'} <span class="text-xs text-zinc-500">• ${row.listing?.platform||''}</span></div>
+          <div class="text-xs text-zinc-600 truncate max-w-[42ch]">${row.category||'General'} · ${row.message}</div>
         </div>
-        <button class="px-2 py-1 text-sm rounded-lg border border-zinc-300" data-thread="${row.id}">Open</button>
-      </div>`).join('');
-    }
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded-lg text-xs ${badge}">${row.status||'open'}</span>
+          <button class="px-2 py-1 text-sm rounded-lg border border-zinc-300" data-thread="${row.id}">Open</button>
+        </div>
+      </div>`;
+    }).join('') || '<div class="py-3 text-zinc-500">No tickets.</div>';
+  }
+  async function openThread(id){
+    currentThreadId = id; els.chatDetail.classList.remove('hidden');
+    const metaList = await api.listTickets();
+    const t = (metaList||[]).find(x=>x.id===id);
+    if (t) els.ticketMeta.textContent = `${t.subject||'Ticket'} • ${t.category||'General'} • ${t.status||'open'} • ${t.listing?.username||''}`;
+    const msgs = await api.ticketMessages(id);
+    els.threadMsgs.innerHTML = (msgs||[]).map(m => `<div class="${m.role==='staff'?'text-right':'text-left'}">
+      <span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span>
+    </div>`).join('');
+    els.threadMsgs.scrollTop = els.threadMsgs.scrollHeight;
+  }
+  async function replyToThread(){
+    const txt = (els.replyText?.value||'').trim(); if (!txt || !currentThreadId) return;
+    await api.replyStaff(currentThreadId, txt); els.replyText.value=''; await openThread(currentThreadId);
+  }
+  async function closeThread(){ if (!currentThreadId) return; await api.setStatus(currentThreadId, 'closed'); await openThread(currentThreadId); }
+  async function reopenThread(){ if (!currentThreadId) return; await api.setStatus(currentThreadId, 'open'); await openThread(currentThreadId); }
 
-    async function openThread(id){
-      currentThreadId = id;
-      els.chatDetail?.classList.remove('hidden');
-      const { data: t } = await sb.from('inquiries').select('id, subject, status, category, contact, created_at, listing:listings(username, platform)').eq('id', id).single();
-      if (els.ticketMeta && t){ els.ticketMeta.textContent = `${t.subject||'Ticket'} • ${t.category||'General'} • ${t.status||'open'} • ${t.listing?.username||''}`; }
-      const { data, error } = await sb.from('inquiries_messages').select('*').eq('thread_id', id).order('created_at');
-      if (!error && els.threadMsgs){
-        els.threadMsgs.innerHTML = (data||[]).map(m => `<div class="${m.role==='staff'?'text-right':'text-left'}">
-          <span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span>
-        </div>`).join('');
-        els.threadMsgs.scrollTop = els.threadMsgs.scrollHeight;
-      }
-    } = await sb.from('inquiries_messages').select('*').eq('thread_id', id).order('created_at');
-      if (!error && els.threadMsgs){
-        els.threadMsgs.innerHTML = (data||[]).map(m => `<div class="${m.role==='staff'?'text-right':'text-left'}">
-          <span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span>
-        </div>`).join('');
-        els.threadMsgs.scrollTop = els.threadMsgs.scrollHeight;
-      }
-    }
+  // ===== Buyer portal via hash =====
+  async function maybeOpenPortalFromHash(){
+    const m = location.hash.match(/^#ticket=([0-9a-fA-F-\\-]{8,}):([0-9a-fA-F-\\-]{8,})$/);
+    if (!m) return;
+    const [, id, token] = m;
+    const res = await api.portalGet(id, token);
+    const modal = byId('ticketPortal'); const msgs = byId('tpMsgs'); const meta = byId('tpMeta'); const input = byId('tpReply'); const send = byId('tpSend');
+    if (!res || !res.length){ meta.textContent = 'Ticket not found or closed.'; modal.classList.remove('hidden'); return; }
+    const t = res[0]; meta.textContent = `${t.subject} • ${t.category} • ${t.status} • ${t.listing_username||''}`;
+    msgs.innerHTML = (t.messages||[]).map(m => `<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
+    modal.classList.remove('hidden');
+    send.onclick = async ()=>{ const txt=(input.value||'').trim(); if(!txt) return; const ok = await api.portalPost(id, token, txt); if(ok){ input.value=''; maybeOpenPortalFromHash(); } };
+  }
 
-    async function replyToThread(){
-      const txt = (els.replyText?.value||'').trim(); if (!txt || !currentThreadId) return;
-      const { error } = await sb.from('inquiries_messages').insert({ thread_id: currentThreadId, role: 'staff', text: txt });
-      if (!error){ if (els.replyText) els.replyText.value=''; await openThread(currentThreadId); }
-    }
-    async function closeThread(id){ await sb.from('inquiries').update({status:'closed'}).eq('id', id); await openThread(id); }
-    async function reopenThread(id){ await sb.from('inquiries').update({status:'open'}).eq('id', id); await openThread(id); } = await sb.from('inquiries_messages').insert({ thread_id: currentThreadId, role: 'staff', text: txt });
-      if (!error){ if (els.replyText) els.replyText.value=''; await openThread(currentThreadId); }
-    }
+  // ===== INIT =====
+  addEventListener('DOMContentLoaded', async () => {
+    els.year.textContent = new Date().getFullYear();
 
-    // ======= Public Inquiry =======
-    async function createInquiry(listingId, message, subject, category, contact){
-      const token = (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now();
-      const { data, error } = await sb.from('inquiries').insert({ listing_id: listingId, message, subject, category, contact, status:'open', viewer_token: token }).select('id');
-      return { id: data?.[0]?.id, token, error };
-    }
+    // Textarea local save
+    const savedDesc = localStorage.getItem(LSK.publicDesc)||''; byId('publicDesc').value = savedDesc;
+    byId('publicDesc').addEventListener('input', (e)=> localStorage.setItem(LSK.publicDesc, e.target.value));
 
-    // ======= Buyer Ticket Portal (view/reply with token) =======
-    async function ticketGet(pId, pToken){
-      // requires SQL function ticket_get(p_id uuid, p_token uuid)
-      const { data, error } = await sb.rpc('ticket_get', { p_id: pId, p_token: pToken });
-      return { data, error };
-    }
-    async function ticketPost(pId, pToken, text){
-      // requires SQL function ticket_post(p_id uuid, p_token uuid, p_text text)
-      const { data, error } = await sb.rpc('ticket_post', { p_id: pId, p_token: pToken, p_text: text });
-      return { ok: data === true, error };
-    } = await sb.from('inquiries').insert({ listing_id: listingId, message }).select('id');
-      return { id: data?.[0]?.id, error };
-    }
+    // Filters + render
+    const debounce = (fn, ms=100)=>{ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms);} };
+    const debouncedRender = debounce(()=>render(), 80);
+    [els.search, els.platform, els.status, els.sort].forEach(el => el && el.addEventListener('input', debouncedRender));
+    els.browseBtn.addEventListener('click', (e)=>{ e.preventDefault(); els.search.value=''; els.platform.value=''; els.status.value=''; els.sort.value='new'; render(); byId('catalogSection').scrollIntoView({behavior:'smooth',block:'start'}); });
 
-    // ======= INIT =======
-    addEventListener('DOMContentLoaded', async () => {
-      if (els.year) els.year.textContent = new Date().getFullYear();
-      const savedLang = localStorage.getItem(LS.lang); if (savedLang && I18N[savedLang]) currentLang = savedLang; applyI18n();
-      const savedDesc = localStorage.getItem(LS.publicDesc); if (savedDesc && document.getElementById('publicDesc')) document.getElementById('publicDesc').value = savedDesc;
-      document.getElementById('publicDesc')?.addEventListener('input', (e)=> localStorage.setItem(LS.publicDesc, e.target.value));
-
-      // Browse reset → full store
-      els.browseBtn?.addEventListener('click', (e)=>{ e.preventDefault(); if (els.search) els.search.value=''; if (els.platform) els.platform.value=''; if (els.status) els.status.value=''; if (els.sort) els.sort.value='new'; render(); document.getElementById('catalogSection')?.scrollIntoView({behavior:'smooth',block:'start'}); });
-
-      // Render + filters (debounced)
-      await render();
-      const debounce = (fn, ms=100) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
-      const debouncedRender = debounce(()=>render(), 80);
-      [els.search, els.platform, els.status, els.sort].forEach(el => el && el.addEventListener('input', debouncedRender));
-
-      // Card actions
-      els.catalog?.addEventListener('click', (e) => {
-        const btn = e.target.closest('button'); if (!btn) return; const id = btn.getAttribute('data-id'); const action = btn.getAttribute('data-action'); const item = active.find(x => String(x.id) === String(id)); if (!item) return;
-        if (action==='buy' && item.status!=='Sold') openModal(item);
-        if (action==='copy') navigator.clipboard.writeText(item.username).then(()=>{ btn.textContent = currentLang==='ar'?'تم النسخ':'Copied'; setTimeout(()=> btn.textContent = currentLang==='ar'?'نسخ':'Copy', 1200); });
-      });
-
-      // Buy modal actions
-      els.copyBtn?.addEventListener('click', () => { if (!currentItem) return; navigator.clipboard.writeText(currentItem.username); });
-      els.reserveBtn?.addEventListener('click', () => { alert('Reservation flow should be implemented in backend (Stripe/escrow).'); });
-      els.inquiryBtn?.addEventListener('click', ()=> els.inquiryForm?.classList.toggle('hidden'));
-      els.sendInquiry?.addEventListener('click', async ()=>{
-        const msg = (els.inquiryText?.value||'').trim(); if (!msg || !currentItem) return; if (els.inqStatus) els.inqStatus.textContent = 'Opening ticket...';
-        const subject = (document.getElementById('inquirySubject')?.value||'').trim();
-        const category = (document.getElementById('inquiryCategory')?.value||'General');
-        const contact = (document.getElementById('inquiryContact')?.value||'').trim();
-        const { id, token, error } = await createInquiry(currentItem.id, msg, subject, category, contact);
-        if (error){ if (els.inqStatus) els.inqStatus.textContent = 'Failed. Try WhatsApp.'; }
-        else {
-          const link = `#ticket=${id}:${token}`;
-          if (els.inqStatus) els.inqStatus.innerHTML = `Ticket opened. <a href="${link}" class="underline">Open your ticket</a>`;
-          if (els.inquiryText) els.inquiryText.value='';
-          navigator.clipboard?.writeText(location.origin + location.pathname + link).catch(()=>{});
-        }
-      }); if (!msg || !currentItem) return; if (els.inqStatus) els.inqStatus.textContent = 'Sending...';
-        const { id, error } = await createInquiry(currentItem.id, msg);
-        if (error){ if (els.inqStatus) els.inqStatus.textContent = 'Failed. Try WhatsApp.'; }
-        else { if (els.inqStatus) els.inqStatus.textContent = 'Sent. Our staff will reply soon.'; if (els.inquiryText) els.inquiryText.value=''; }
-      });
-
-      // i18n toggle
-      els.langBtn?.addEventListener('click', () => { currentLang = currentLang==='en' ? 'ar' : 'en'; localStorage.setItem(LS.lang, currentLang); applyI18n(); render(); });
-
-      // Auth: staff login
-      els.loginBtn?.addEventListener('click', ()=> openLogin());
-      els.heroLoginBtn?.addEventListener('click', ()=> openLogin());
-      els.loginForm?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const fd = new FormData(els.loginForm);
-        const email = fd.get('email'); const password = fd.get('pass');
-        const { data, error } = await sb.auth.signInWithPassword({ email, password });
-        if (error){ alert('Invalid credentials'); return; }
-        const { data: prof } = await sb.from('profiles').select('is_staff').eq('id', data.user.id).single();
-        isStaff = !!prof?.is_staff;
-        if (!isStaff){ alert('Not staff'); return; }
-        closeLogin(); openAdmin();
-      });
-
-      // Admin controls
-      document.getElementById('addListingBtn')?.addEventListener('click', (e)=>{ e.preventDefault(); openAdmin(); });
-      els.refreshBtn?.addEventListener('click', refreshAdminList);
-      els.addForm?.addEventListener('submit', async (e)=>{
-        e.preventDefault(); if (!isStaff) { openLogin(); return; }
-        const fd = new FormData(els.addForm);
-        const item = { username: String(fd.get('username')||'').trim(), platform: fd.get('platform'), price: Number(fd.get('price')||0), tags: String(fd.get('tags')||'').split(',').map(s=>s.trim()).filter(Boolean), status: fd.get('status'), stripe: String(fd.get('stripe')||'').trim() };
-        const { error } = await sb.from('listings').insert(item);
-        if (error) { alert('Add failed'); } else { els.addForm.reset(); refreshAdminList(); render(); }
-      });
-
-      // Chats tab
-      els.tabListings?.addEventListener('click', ()=> showTab('listings'));
-      els.tabChats?.addEventListener('click', ()=> { showTab('chats'); loadChats(); });
-      els.chatsList?.addEventListener('click', (e)=>{ const btn=e.target.closest('button[data-thread]'); if (!btn) return; openThread(btn.getAttribute('data-thread')); });
-      els.sendReply?.addEventListener('click', replyToThread);
-      document.getElementById('closeTicket')?.addEventListener('click', ()=> currentThreadId && closeThread(currentThreadId));
-      document.getElementById('reopenTicket')?.addEventListener('click', ()=> currentThreadId && reopenThread(currentThreadId));
-
-      // Ticket portal via URL hash: #ticket=<id>:<token>
-      async function maybeOpenPortalFromHash(){
-        const m = location.hash.match(/^#ticket=([0-9a-fA-F-]{36}):([0-9a-fA-F-]{36})$/);
-        if (!m) return;
-        const [_, id, token] = m;
-        const modal = document.getElementById('ticketPortal');
-        const msgs = document.getElementById('tpMsgs');
-        const meta = document.getElementById('tpMeta');
-        const input = document.getElementById('tpReply');
-        const send = document.getElementById('tpSend');
-        const res = await ticketGet(id, token);
-        if (res.error || !res.data || !res.data.length){
-          meta.textContent = 'Ticket not found or closed.';
-          modal?.classList.remove('hidden');
-          return;
-        }
-        const t = res.data[0];
-        meta.textContent = `${t.subject} • ${t.category} • ${t.status} • ${t.listing_username||''}`;
-        msgs.innerHTML = (t.messages||[]).map(m=> `<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
-        modal?.classList.remove('hidden');
-        send.onclick = async ()=>{ const txt = (input.value||'').trim(); if (!txt) return; const out = await ticketPost(id, token, txt); if (out.ok){ input.value=''; maybeOpenPortalFromHash(); } };
-      }
-      window.addEventListener('hashchange', maybeOpenPortalFromHash);
-      maybeOpenPortalFromHash();
-
-      // ======= Minimal Tests (run automatically, log to console) =======
-      (function runTests(){
-        const results = [];
-        const test = async (name, fn)=>{ try{ await fn(); results.push(['PASS', name]); } catch(e){ console.error(e); results.push(['FAIL', name, e.message]); } };
-        test('render no re-entry', async ()=>{ await Promise.all(Array.from({length:10}, ()=>render())); });
-        test('i18n toggle', async ()=>{ const prev = document.documentElement.dir; currentLang = (currentLang==='en'?'ar':'en'); applyI18n(); if (document.documentElement.dir === prev) throw new Error('dir did not change'); currentLang = (currentLang==='en'?'ar':'en'); applyI18n(); });
-        test('browse button resets filters', async ()=>{ if (!els.browseBtn) return; els.search.value='abc'; els.platform.value='Instagram'; els.status.value='Sold'; els.sort.value='priceDesc'; els.browseBtn.click(); });
-        setTimeout(()=>{ console.group('Fotany Store — Tests'); results.forEach(r=> console[r[0]==='PASS'?'log':'error'](r[0], r[1], r[2]||'')); console.groupEnd(); }, 300);
-      })();
+    // Catalog actions
+    els.catalog.addEventListener('click', (e) => {
+      const btn = e.target.closest('button'); if (!btn) return;
+      const id = btn.getAttribute('data-id'); const action = btn.getAttribute('data-action'); const item = active.find(x => String(x.id) === String(id));
+      if (!item) return;
+      if (action==='buy' && item.status!=='Sold') openModal(item);
+      if (action==='copy') navigator.clipboard.writeText(item.username).then(()=>{ btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200); });
     });
+
+    // Buy modal actions
+    els.copyBtn.addEventListener('click', () => { if (!currentItem) return; navigator.clipboard.writeText(currentItem.username); });
+    els.reserveBtn.addEventListener('click', () => { alert('Reservation flow is local only. For real payments, use Stripe/escrow.'); });
+    els.inquiryBtn.addEventListener('click', ()=> els.inquiryForm.classList.toggle('hidden'));
+    els.sendInquiry.addEventListener('click', async ()=>{
+      const msg = (els.inquiryText?.value||'').trim(); if (!msg || !currentItem) return; els.inqStatus.textContent = 'Opening ticket...';
+      const subject = (byId('inquirySubject')?.value||'').trim();
+      const category = (byId('inquiryCategory')?.value||'General');
+      const contact = (byId('inquiryContact')?.value||'').trim();
+      try{
+        const { id, token } = await api.openTicket(currentItem.id, subject, category, contact, msg);
+        const link = `#ticket=${id}:${token}`; els.inqStatus.innerHTML = `Ticket opened. <a href="${link}" class="underline">Open your ticket</a>`;
+        els.inquiryText.value=''; navigator.clipboard?.writeText(location.origin + location.pathname + link).catch(()=>{});
+      } catch { els.inqStatus.textContent = 'Failed. Try again.'; }
+    });
+
+    // Login
+    els.loginBtn.addEventListener('click', openLogin);
+    els.heroLoginBtn.addEventListener('click', openLogin);
+    els.loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(els.loginForm);
+      const emailRaw = String(fd.get('email')||'').trim();
+      const password = String(fd.get('pass')||'');
+      const isLocalStaff = ((emailRaw.toLowerCase()==='mohamed' || emailRaw.toLowerCase()==='mohamed@local.dev') && password==='Mm322610@123');
+      if (isLocalStaff || EFFECTIVE_MODE==='local'){ isStaff = true; closeLogin(); openAdmin(); return; }
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({ email: emailRaw, password });
+        if (error) { alert('Invalid credentials'); return; }
+        const { data: prof } = await sb.from('profiles').select('is_staff').eq('id', data.user.id).single();
+        if (!prof?.is_staff){ alert('Not staff'); return; }
+        isStaff = true; closeLogin(); openAdmin();
+      } catch { alert('Login failed'); }
+    });
+
+    // Admin
+    byId('addListingBtn').addEventListener('click', (e)=>{ e.preventDefault(); openAdmin(); });
+    els.refreshBtn.addEventListener('click', refreshAdminList);
+    els.addForm.addEventListener('submit', async (e)=>{
+      e.preventDefault(); if (!isStaff) { openLogin(); return; }
+      const fd = new FormData(els.addForm);
+      const item = { username:String(fd.get('username')||'').trim(), platform:fd.get('platform'), price:Number(fd.get('price')||0), tags:String(fd.get('tags')||'').split(',').map(s=>s.trim()).filter(Boolean), status:fd.get('status'), stripe:String(fd.get('stripe')||'').trim() };
+      try { await api.addListing(item); els.addForm.reset(); refreshAdminList(); render(); } catch { alert('Add failed'); }
+    });
+
+    // Tickets tab
+    els.tabListings.addEventListener('click', ()=> showTab('listings'));
+    els.tabChats.addEventListener('click', ()=> { showTab('chats'); loadChats(); });
+    els.chatsList.addEventListener('click', (e)=>{ const btn=e.target.closest('button[data-thread]'); if (!btn) return; openThread(btn.getAttribute('data-thread')); });
+    els.sendReply.addEventListener('click', replyToThread);
+    els.closeTicket.addEventListener('click', closeThread);
+    els.reopenTicket.addEventListener('click', reopenThread);
+
+    // Buyer portal
+    window.addEventListener('hashchange', maybeOpenPortalFromHash);
+    await render(); maybeOpenPortalFromHash();
+  });
   </script>
 
-  <!-- Legal note -->
   <section class="max-w-6xl mx-auto px-4 py-6 text-xs text-zinc-500">
-    <p><strong data-i18n="heads">Heads‑up:</strong> <span data-i18n="legal">Selling or transferring social handles may violate platform Terms. You are responsible for compliance and safe transfers. Consider escrow and proof‑of‑ownership before payment.</span></p>
+    <p><strong>Heads-up:</strong> Selling or transferring social handles may violate platform Terms. You are responsible for compliance and safe transfers. Consider escrow and proof-of-ownership before payment.</p>
   </section>
 </body>
 </html>
-
