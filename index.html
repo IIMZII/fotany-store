@@ -6,9 +6,11 @@
   <title>Fotany Store</title>
   <meta name="description" content="Fotany Store — Buy and sell online usernames/handles." />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     .fade-in { animation: fade-in .2s ease-out; }
     @keyframes fade-in { from {opacity:0; transform:translateY(4px)} to {opacity:1; transform:none} }
+    .staff-only[disabled], .staff-only.hidden { display: none !important; }
   </style>
 </head>
 <body class="bg-zinc-50 text-zinc-900">
@@ -32,7 +34,7 @@
     <div class="max-w-6xl mx-auto px-4 py-10 md:py-14 grid md:grid-cols-2 gap-6 items-center">
       <div>
         <h2 class="text-2xl md:text-3xl font-bold">Welcome to Fotany Store</h2>
-        <p class="mt-2 text-zinc-600">Shop clean, rare, and brandable usernames. Verified transfers. Simple ticket system or instant contact.</p>
+        <p class="mt-2 text-zinc-600">Shop clean, rare, and brandable usernames. Public catalog. Staff-only edits.</p>
         <div class="mt-5 flex flex-wrap items-center gap-3">
           <a id="browseBtn" href="#catalogSection" class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Browse the store</a>
           <a href="https://www.tiktok.com/@fotany" target="_blank" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">TikTok: @fotany</a>
@@ -41,7 +43,7 @@
 
       <div class="bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm">
         <h3 class="font-semibold">Store account</h3>
-        <p class="text-sm text-zinc-600 mt-1">Official Fotany listings. Secure handover after payment. Use <b>Discord</b> or <b>Telegram</b> for questions.</p>
+        <p class="text-sm text-zinc-600 mt-1">Use <b>Discord</b> or <b>Telegram</b> for questions. Listings are synced for everyone.</p>
         <div class="mt-4 grid gap-2 text-sm">
           <div class="flex items-center justify-between">
             <span class="text-zinc-600">TikTok</span>
@@ -51,13 +53,6 @@
             <span class="text-zinc-600">Discord</span>
             <span class="text-zinc-900">Server invite below</span>
           </div>
-        </div>
-        <div class="mt-4">
-          <label class="text-xs text-zinc-600">Description</label>
-          <textarea class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" rows="3" id="publicDesc" placeholder="Short public note for buyers"></textarea>
-        </div>
-        <div class="mt-4">
-          <button id="heroLoginBtn" class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Login</button>
         </div>
       </div>
     </div>
@@ -81,7 +76,7 @@
         <label class="text-xs text-zinc-600">Status</label>
         <select id="status" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300 bg-white">
           <option value="">All</option>
-          <option value="Available">Available</option><option value="Reserved">Reserved</option><option value="Sold">Sold</option>
+          <option value="Available">Available</option><option value="Reserved">Reserved</option><option>Sold</option>
         </select>
       </div>
       <div>
@@ -113,49 +108,6 @@
     </div>
   </footer>
 
-  <!-- Buy Modal -->
-  <div id="buyModal" class="hidden fixed inset-0 z-50" aria-modal="true" role="dialog">
-    <div class="absolute inset-0 bg-black/40" onclick="closeModal()" aria-hidden="true"></div>
-    <div class="relative max-w-lg mx-auto mt-24 bg-white rounded-2xl shadow-xl p-5 fade-in">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h3 id="mTitle" class="text-lg font-semibold"></h3>
-          <p id="mSubtitle" class="text-sm text-zinc-600"></p>
-        </div>
-        <button class="text-zinc-500 hover:text-zinc-900" onclick="closeModal()" aria-label="Close">✕</button>
-      </div>
-      <div class="mt-4 grid gap-3">
-        <a id="dcBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700">Contact on Discord</a>
-        <a id="tgBtn" target="_blank" class="block text-center px-4 py-2 rounded-xl bg-cyan-600 text-white hover:bg-cyan-700">Contact on Telegram</a>
-        <button id="inquiryBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Message the store</button>
-        <button id="copyBtn" class="px-4 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100">Copy username</button>
-      </div>
-      <div id="inquiryForm" class="hidden mt-3">
-        <label class="text-xs text-zinc-600">Subject</label>
-        <input id="inquirySubject" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Offer, Transfer, Question" />
-        <div class="mt-2 grid grid-cols-2 gap-2">
-          <div>
-            <label class="text-xs text-zinc-600">Category</label>
-            <select id="inquiryCategory" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300">
-              <option>General</option><option>Offer</option><option>Transfer</option><option>Payment</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-xs text-zinc-600">Contact (Discord or Telegram)</label>
-            <input id="inquiryContact" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="@yourdiscord or @telegram" />
-          </div>
-        </div>
-        <label class="mt-2 text-xs text-zinc-600">Your message</label>
-        <textarea id="inquiryText" rows="3" class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Hi, I want to know..."></textarea>
-        <div class="mt-2 flex items-center gap-2">
-          <button id="sendInquiry" class="px-3 py-2 rounded-xl bg-zinc-900 text-white">Open ticket</button>
-          <span id="inqStatus" class="text-xs text-zinc-500"></span>
-        </div>
-      </div>
-      <p class="mt-4 text-xs text-zinc-500">Tickets are private. Buyers get a link; only staff can see all tickets.</p>
-    </div>
-  </div>
-
   <!-- Login Modal -->
   <div id="loginModal" class="hidden fixed inset-0 z-50" aria-modal="true" role="dialog">
     <div class="absolute inset-0 bg-black/40" onclick="closeLogin()" aria-hidden="true"></div>
@@ -174,7 +126,7 @@
           <input name="pass" type="password" required class="w-full mt-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="••••••" />
         </div>
         <button class="px-4 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800">Login</button>
-        <p class="text-xs text-zinc-500">Local login works now. (mohamed / Mm322610@123)</p>
+        <p class="text-xs text-zinc-500">Local login works now (mohamed / Mm322610@123). For shared edits, connect Supabase below.</p>
       </form>
     </div>
   </div>
@@ -190,10 +142,8 @@
 
       <div class="mt-4 flex gap-2">
         <button class="tab-btn px-3 py-2 rounded-xl border border-zinc-300" id="tabListings" aria-selected="true">Listings</button>
-        <button class="tab-btn px-3 py-2 rounded-xl border border-zinc-300" id="tabChats">Tickets</button>
       </div>
 
-      <!-- Listings Tab -->
       <div id="panelListings" class="mt-4">
         <form id="addForm" class="grid sm:grid-cols-2 gap-3">
           <div>
@@ -230,122 +180,100 @@
           <div id="adminList" class="text-sm divide-y divide-zinc-200"></div>
         </div>
       </div>
-
-      <!-- Tickets Tab -->
-      <div id="panelChats" class="mt-4 hidden">
-        <div id="chatsList" class="text-sm divide-y divide-zinc-200"></div>
-        <div id="chatDetail" class="mt-4 hidden">
-          <h4 class="font-medium">Ticket</h4>
-          <div id="ticketMeta" class="mt-1 text-xs text-zinc-500"></div>
-          <div id="threadMsgs" class="mt-2 p-3 bg-zinc-50 border border-zinc-200 rounded-xl max-h-72 overflow-auto space-y-2"></div>
-          <div class="mt-2 flex gap-2">
-            <input id="replyText" class="flex-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Reply as staff..." />
-            <button id="sendReply" class="px-3 py-2 rounded-xl bg-zinc-900 text-white">Send</button>
-          </div>
-          <div class="mt-2 flex items-center gap-2">
-            <button id="closeTicket" class="px-2 py-1 rounded-lg border border-zinc-300">Close Ticket</button>
-            <button id="reopenTicket" class="px-2 py-1 rounded-lg border border-zinc-300">Reopen</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Buyer Ticket Portal -->
-  <div id="ticketPortal" class="hidden fixed inset-0 z-50" aria-modal="true" role="dialog">
-    <div class="absolute inset-0 bg-black/40" onclick="document.getElementById('ticketPortal').classList.add('hidden')" aria-hidden="true"></div>
-    <div class="relative max-w-lg mx-auto mt-24 bg-white rounded-2xl shadow-xl p-5 fade-in">
-      <div class="flex items-start justify-between gap-4">
-        <div>
-          <h3 class="text-lg font-semibold">Your Ticket</h3>
-          <p id="tpMeta" class="text-xs text-zinc-500"></p>
-        </div>
-        <button class="text-zinc-500 hover:text-zinc-900" onclick="document.getElementById('ticketPortal').classList.add('hidden')" aria-label="Close">✕</button>
-      </div>
-      <div id="tpMsgs" class="mt-3 p-3 bg-zinc-50 border border-zinc-200 rounded-xl max-h-72 overflow-auto space-y-2"></div>
-      <div class="mt-3 flex gap-2">
-        <input id="tpReply" class="flex-1 px-3 py-2 rounded-xl border border-zinc-300" placeholder="Write a reply..." />
-        <button id="tpSend" class="px-3 py-2 rounded-xl bg-zinc-900 text-white">Send</button>
-      </div>
-      <p class="mt-3 text-xs text-zinc-500">Keep this link. It works until the ticket is closed by staff.</p>
     </div>
   </div>
 
   <script>
   // ======== CONFIG ========
-  const SELLER_DISCORD = 'https://discord.gg/YOUR_INVITE'; // Discord invite
-  const SELLER_TELEGRAM = 'yourtelegram'; // username (no @)
+  const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co'; // put real project URL
+  const SUPABASE_ANON_KEY = 'YOUR-ANON-KEY';               // put real anon key
   const CURRENCY = 'AED';
+  const PUBLIC_READ = true; // everyone can open dashboard to view (read-only if not staff)
 
-  // ======== UTIL / LOCAL DB ========
-  const els = Object.fromEntries(['year','catalog','emptyState','search','platform','status','sort','browseBtn','buyModal','mTitle','mSubtitle','dcBtn','tgBtn','inquiryBtn','copyBtn','inquiryForm','inquiryText','sendInquiry','inqStatus','loginBtn','heroLoginBtn','loginModal','loginForm','adminModal','addListingBtn','addForm','adminList','refreshBtn','tabListings','tabChats','panelListings','panelChats','chatsList','chatDetail','ticketMeta','threadMsgs','replyText','sendReply','closeTicket','reopenTicket'].map(id=>[id,document.getElementById(id)]));
-  const LSK = { db: 'fs:db', publicDesc: 'fs:desc' };
+  // ======== SUPABASE / MODE ========
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, { auth: { persistSession: true } });
+  const supaConfigured = !SUPABASE_URL.includes('YOUR-PROJECT') && !SUPABASE_ANON_KEY.includes('YOUR-ANON-KEY');
+  const MODE = supaConfigured ? 'supabase' : 'local';
+
+  // ======== LOCAL DB (fallback) ========
+  const LSK = { db: 'fs:db' };
   function uuid(){ return (crypto&&crypto.randomUUID)?crypto.randomUUID():Math.random().toString(16).slice(2)+'-'+Date.now(); }
-  function dbGet(){ try{ return JSON.parse(localStorage.getItem(LSK.db)||'{}'); } catch { return {}; } }
-  function dbSet(v){ localStorage.setItem(LSK.db, JSON.stringify(v)); }
-  function dbEnsure(){
-    const db = dbGet();
-    db.listings ??= [
-      { id:'seed1', username:'@DesertKing', platform:'Instagram', price:3500, tags:['arabic','luxury'], status:'Available', createdAt:'2025-08-20T09:00:00Z' },
-      { id:'seed2', username:'@FalconTech', platform:'X',         price:2800, tags:['tech','uae'],    status:'Available', createdAt:'2025-08-18T13:00:00Z' },
-      { id:'seed3', username:'@Mawsem',     platform:'Instagram', price:4200, tags:['honey'],         status:'Reserved',  createdAt:'2025-08-17T10:30:00Z' }
-    ];
-    db.inquiries ??= []; db.messages ??= [];
-    dbSet(db);
-  }
-  dbEnsure();
-  let isStaff = false, currentItem = null, currentThreadId = null, active = [];
+  function lget(){ try{ return JSON.parse(localStorage.getItem(LSK.db)||'{}'); } catch { return {}; } }
+  function lset(v){ localStorage.setItem(LSK.db, JSON.stringify(v)); }
+  function ensureSeed(){ const db=lget(); db.listings??=[
+      { id:'seed1', username:'@DesertKing', platform:'Instagram', price:3500, tags:['arabic','luxury'], status:'Available', created_at:'2025-08-20T09:00:00Z' },
+      { id:'seed2', username:'@FalconTech', platform:'X',         price:2800, tags:['tech','uae'],    status:'Available', created_at:'2025-08-18T13:00:00Z' },
+      { id:'seed3', username:'@Mawsem',     platform:'Instagram', price:4200, tags:['honey'],         status:'Reserved',  created_at:'2025-08-17T10:30:00Z' }
+    ]; lset(db); }
+  if (MODE==='local') ensureSeed();
 
-  // ======== HELPERS ========
+  // ======== API (listings only) ========
+  const api = MODE==='supabase' ? {
+    async list(){ const { data, error } = await sb.from('listings').select('*').order('created_at', {ascending:false}); if(error) throw error; return data||[]; },
+    async add(it){
+      const { data: user } = await sb.auth.getUser();
+      if (!user?.user) throw new Error('Not logged in');
+      const { error } = await sb.from('listings').insert({ username:it.username, platform:it.platform, price:it.price, tags:it.tags, status:it.status });
+      if (error) throw error;
+    },
+    async del(id){
+      const { data: user } = await sb.auth.getUser();
+      if (!user?.user) throw new Error('Not logged in');
+      const { error } = await sb.from('listings').delete().eq('id', id);
+      if (error) throw error;
+    },
+    async login(email, password){
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      // check profiles.is_staff
+      const { data: prof, error: pErr } = await sb.from('profiles').select('is_staff').eq('id', data.user.id).single();
+      if (pErr || !prof?.is_staff) throw new Error('Not staff');
+      return true;
+    }
+  } : {
+    async list(){ return lget().listings || []; },
+    async add(it){ const db=lget(); it.id=uuid(); it.created_at=new Date().toISOString(); db.listings=[it,...(db.listings||[])]; lset(db); },
+    async del(id){ const db=lget(); db.listings=(db.listings||[]).filter(x=>String(x.id)!==String(id)); lset(db); },
+    async login(u,p){ return (u.toLowerCase()==='mohamed'||u.toLowerCase()==='mohamed@local.dev') && p==='Mm322610@123'; }
+  };
+
+  // ======== UI/State ========
+  const els = Object.fromEntries(['year','catalog','emptyState','search','platform','status','sort','browseBtn','loginBtn','addListingBtn','loginModal','loginForm','adminModal','addForm','adminList','refreshBtn','tabListings','panelListings'].map(id=>[id,document.getElementById(id)]));
+  let isStaff = false, cache = [];
+
   const money = (n) => new Intl.NumberFormat(undefined,{style:'currency',currency:'USD'}).format(n).replace('US$ ', CURRENCY+' ');
   const platformColor = (p) => ({ Instagram:'bg-pink-600', TikTok:'bg-gray-900', X:'bg-black', Snapchat:'bg-yellow-400 text-black', Discord:'bg-indigo-600', Gaming:'bg-emerald-600', Email:'bg-zinc-700', Other:'bg-zinc-500' }[p]||'bg-zinc-500');
 
-  // ======== API (LOCAL) ========
-  const api = {
-    listListings(){ return dbGet().listings; },
-    addListing(it){ const db=dbGet(); it.id=uuid(); it.createdAt=new Date().toISOString(); db.listings.unshift(it); dbSet(db); },
-    deleteListing(id){ const db=dbGet(); db.listings = (db.listings||[]).filter(l=>String(l.id)!==String(id)); dbSet(db); },
-    listTickets(){ const db=dbGet(); return (db.inquiries||[]).map(q=>({ id:q.id, listing_id:q.listing_id, message:q.message, subject:q.subject, category:q.category, status:q.status, created_at:q.created_at, listing:{ username:(db.listings.find(l=>l.id===q.listing_id)||{}).username, platform:(db.listings.find(l=>l.id===q.listing_id)||{}).platform } })); },
-    ticketMessages(id){ const db=dbGet(); return (db.messages||[]).filter(m=>m.thread_id===id).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)); },
-    replyStaff(id, text){ const db=dbGet(); db.messages.push({ id:uuid(), thread_id:id, role:'staff', text, created_at:new Date().toISOString() }); dbSet(db); },
-    setStatus(id,status){ const db=dbGet(); const t=db.inquiries.find(x=>x.id===id); if(t) t.status=status; dbSet(db); },
-    openTicket(listingId, subject, category, contact, message){
-      const db=dbGet(); const id=uuid(); const token=uuid();
-      db.inquiries.push({ id, listing_id:listingId, message, subject, category, contact, status:'open', viewer_token:token, created_at:new Date().toISOString() });
-      db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text:message, created_at:new Date().toISOString() });
-      dbSet(db); return { id, token };
-    },
-    portalGet(id, token){
-      const db=dbGet(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return [];
-      const msgs=(db.messages||[]).filter(m=>m.thread_id===id);
-      return [{ id, subject:t.subject||'Ticket', category:t.category||'General', status:t.status, listing_username:(db.listings.find(l=>l.id===t.listing_id)||{}).username, messages: msgs }];
-    },
-    portalPost(id, token, text){
-      const db=dbGet(); const t=db.inquiries.find(x=>x.id===id && x.viewer_token===token && x.status!=='closed'); if(!t) return false;
-      db.messages.push({ id:uuid(), thread_id:id, role:'buyer', text, created_at:new Date().toISOString() }); dbSet(db); return true;
+  function openLogin(){ els.loginModal.classList.remove('hidden'); }
+  function closeLogin(){ els.loginModal.classList.add('hidden'); }
+  function openAdmin(){
+    if (!isStaff && !PUBLIC_READ) { openLogin(); return; }
+    els.adminModal.classList.remove('hidden');
+    const addBtn = els.addForm.querySelector('button[type="submit"]');
+    if (!isStaff) { // public view only
+      addBtn.classList.add('staff-only'); addBtn.setAttribute('disabled','true');
+      els.adminList.classList.remove('pointer-events-auto'); // no effect, but keep
+    } else {
+      addBtn.classList.remove('staff-only'); addBtn.removeAttribute('disabled');
     }
-  };
+    refreshAdminList();
+  }
+  function closeAdmin(){ els.adminModal.classList.add('hidden'); }
 
-  // ======== RENDER ========
-  document.getElementById('year').textContent = new Date().getFullYear();
-
-  function renderCatalog(){
-    active = api.listListings();
-    const q=(els.search.value||'').toLowerCase().trim();
-    const pf=els.platform.value||'', st=els.status.value||'', sort=els.sort.value||'new';
-    let list = active.filter(it=>{
-      const MQ = !q || (it.username||'').toLowerCase().includes(q) || (it.tags||[]).join(' ').toLowerCase().includes(q);
+  async function render(){
+    try { cache = await api.list(); } catch { cache = []; }
+    const q=(els.search.value||'').toLowerCase().trim(), pf=els.platform.value||'', st=els.status.value||'', sort=els.sort.value||'new';
+    let list = cache.filter(it=>{
+      const MQ = !q || (it.username||'').toLowerCase().includes(q) || (Array.isArray(it.tags)?it.tags.join(' '):String(it.tags||'')).toLowerCase().includes(q);
       const MP = !pf || it.platform===pf, MS = !st || it.status===st; return MQ && MP && MS;
     });
-    list.sort((a,b)=> sort==='priceAsc'? a.price-b.price : sort==='priceDesc'? b.price-a.price : sort==='name'? String(a.username).localeCompare(String(b.username)) : new Date(b.createdAt)-new Date(a.createdAt));
+    list.sort((a,b)=> sort==='priceAsc'? a.price-b.price : sort==='priceDesc'? b.price-a.price : sort==='name'? String(a.username).localeCompare(String(b.username)) : new Date(b.created_at||0)-new Date(a.created_at||0));
     const wrap = els.catalog; wrap.innerHTML = '';
-    if (!list.length){ document.getElementById('emptyState').classList.remove('hidden'); return; }
-    document.getElementById('emptyState').classList.add('hidden');
+    if (!list.length){ els.emptyState.classList.remove('hidden'); return; } else { els.emptyState.classList.add('hidden'); }
     list.forEach(it=>{
       const sold=it.status==='Sold', reserved=it.status==='Reserved';
       const statusClass=sold?'bg-zinc-200 text-zinc-700': reserved?'bg-amber-100 text-amber-800':'bg-emerald-100 text-emerald-800';
-      const btnDisabled = sold ? 'opacity-60 pointer-events-none' : '';
-      const tagBadges=(it.tags||[]).slice(0,5).map(t=>`<span class="px-2 py-0.5 rounded-lg text-xs border border-zinc-300 bg-white">${t}</span>`).join(' ');
+      const tagBadges=(Array.isArray(it.tags)?it.tags: String(it.tags||'').split(',')).filter(Boolean).slice(0,5).map(t=>`<span class="px-2 py-0.5 rounded-lg text-xs border border-zinc-300 bg-white">${t}</span>`).join(' ');
       const card=document.createElement('div'); card.className='bg-white rounded-2xl border border-zinc-200 p-4 shadow-sm hover:shadow-md transition-shadow fade-in flex flex-col justify-between';
       card.innerHTML=`
         <div class="flex items-start justify-between gap-3">
@@ -354,163 +282,72 @@
             <div class="mt-1 flex items-center gap-2"><span class="px-2 py-1 rounded-lg text-xs text-white ${platformColor(it.platform)}">${it.platform}</span> ${tagBadges}</div>
           </div>
           <div class="text-right">
-            <div class="text-base font-semibold">${money(it.price)}</div>
-            <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-lg text-xs ${statusClass}">${it.status}</div>
+            <div class="text-base font-semibold">${money(Number(it.price||0))}</div>
+            <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-lg text-xs ${statusClass}">${it.status||'Available'}</div>
           </div>
-        </div>
-        <div class="mt-4 flex items-center gap-2">
-          <button class="flex-1 ${btnDisabled} px-3 py-2 rounded-xl bg-zinc-900 text-white hover:bg-zinc-800" data-id="${it.id}" data-action="buy">${sold?'Unavailable':'Buy now'}</button>
-          <button class="px-3 py-2 rounded-xl border border-zinc-300 hover:bg-zinc-100" data-id="${it.id}" data-action="copy">Copy</button>
-        </div>
-        <div class="mt-2 text-[11px] text-zinc-500">Added: ${new Date(it.createdAt).toLocaleDateString()}</div>`;
+        </div>`;
       wrap.appendChild(card);
     });
   }
 
-  function openModal(item){
-    currentItem=item;
-    document.getElementById('mTitle').textContent = `${item.username} • ${item.platform}`;
-    document.getElementById('mSubtitle').textContent = `${money(item.price)} — ${item.status}`;
-    const dclink = SELLER_DISCORD.startsWith('http')? SELLER_DISCORD : `https://discord.gg/${SELLER_DISCORD}`;
-    document.getElementById('dcBtn').href = dclink;
-    document.getElementById('tgBtn').href = `https://t.me/${SELLER_TELEGRAM}?text=${encodeURIComponent('Hi, I am interested in ' + item.username + ' (' + item.platform + ') for ' + CURRENCY + ' ' + item.price)}`;
-    document.getElementById('inquiryForm').classList.add('hidden');
-    document.getElementById('inquiryText').value='';
-    document.getElementById('inqStatus').textContent='';
-    document.getElementById('buyModal').classList.remove('hidden');
-  }
-  function closeModal(){ document.getElementById('buyModal').classList.add('hidden'); }
-  function openLogin(){ document.getElementById('loginModal').classList.remove('hidden'); }
-  function closeLogin(){ document.getElementById('loginModal').classList.add('hidden'); }
-  function openAdmin(){ if(!isStaff){ openLogin(); return; } document.getElementById('adminModal').classList.remove('hidden'); refreshAdminList(); loadChats(); }
-  function closeAdmin(){ document.getElementById('adminModal').classList.add('hidden'); }
-
-  function showTab(which){
-    const list = which==='listings';
-    document.getElementById('tabListings').setAttribute('aria-selected', String(list));
-    document.getElementById('tabChats').setAttribute('aria-selected', String(!list));
-    document.getElementById('panelListings').classList.toggle('hidden', !list);
-    document.getElementById('panelChats').classList.toggle('hidden', list);
-  }
-
-  // ======== Admin data ========
-  function refreshAdminList(){
-    const data = api.listListings();
-    document.getElementById('adminList').innerHTML = (data||[]).map(x=>`
+  async function refreshAdminList(){
+    const data = await api.list();
+    els.adminList.innerHTML = (data||[]).map(x=>`
       <div class="py-2 flex items-center justify-between gap-3">
         <div class="truncate">
           <span class="font-medium">${x.username}</span>
           <span class="text-zinc-500">• ${x.platform}</span>
-          <span class="ml-2 text-zinc-400 text-xs">${money(Number(x.price||0))} — ${x.status}</span>
+          <span class="ml-2 text-zinc-400 text-xs">${money(Number(x.price||0))} — ${x.status||'Available'}</span>
         </div>
         <div class="flex items-center gap-2">
-          <button class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-100 text-xs" data-action="del" data-id="${x.id}">Delete</button>
+          <button class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-100 text-xs ${!isStaff?'staff-only':''}" data-action="del" data-id="${x.id}" ${!isStaff?'disabled':''}>Delete</button>
         </div>
       </div>`).join('') || '<div class="py-3 text-zinc-500">No listings yet.</div>';
   }
-  function loadChats(){
-    const data = api.listTickets();
-    document.getElementById('chatsList').innerHTML = (data||[]).map(row=>{
-      const badge = row.status==='closed' ? 'bg-zinc-200 text-zinc-700' : 'bg-emerald-100 text-emerald-800';
-      return `<div class="py-2 flex items-center justify-between gap-3">
-        <div class="truncate">
-          <div class="text-sm font-medium">${row.subject||'Ticket'} — ${row.listing?.username||'Unknown'} <span class="text-xs text-zinc-500">• ${row.listing?.platform||''}</span></div>
-          <div class="text-xs text-zinc-600 truncate max-w-[42ch]">${row.category||'General'} · ${row.message}</div>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="px-2 py-0.5 rounded-lg text-xs ${badge}">${row.status||'open'}</span>
-          <button class="px-2 py-1 text-sm rounded-lg border border-zinc-300" data-thread="${row.id}">Open</button>
-        </div>
-      </div>`;
-    }).join('') || '<div class="py-3 text-zinc-500">No tickets.</div>';
-  }
-  function openThread(id){
-    currentThreadId=id; document.getElementById('chatDetail').classList.remove('hidden');
-    const metaList = api.listTickets();
-    const t = (metaList||[]).find(x=>x.id===id);
-    if (t) document.getElementById('ticketMeta').textContent = `${t.subject||'Ticket'} • ${t.category||'General'} • ${t.status||'open'} • ${t.listing?.username||''}`;
-    const msgs = api.ticketMessages(id);
-    document.getElementById('threadMsgs').innerHTML = (msgs||[]).map(m=>`<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
-    document.getElementById('threadMsgs').scrollTop = document.getElementById('threadMsgs').scrollHeight;
-  }
-  function replyToThread(){
-    const txt = (document.getElementById('replyText').value||'').trim(); if(!txt||!currentThreadId) return;
-    api.replyStaff(currentThreadId, txt); document.getElementById('replyText').value=''; openThread(currentThreadId);
-  }
-  function closeThread(){ if(!currentThreadId) return; api.setStatus(currentThreadId,'closed'); openThread(currentThreadId); }
-  function reopenThread(){ if(!currentThreadId) return; api.setStatus(currentThreadId,'open'); openThread(currentThreadId); }
-
-  // ======== Buyer portal (#ticket=<id>:<token>) ========
-  function maybeOpenPortalFromHash(){
-    const m = location.hash.match(/^#ticket=([0-9a-fA-F\-]{8,}):([0-9a-fA-F\-]{8,})$/); if(!m) return;
-    const [, id, token] = m;
-    const res = api.portalGet(id, token);
-    const modal = document.getElementById('ticketPortal'), msgs = document.getElementById('tpMsgs'), meta = document.getElementById('tpMeta'), input=document.getElementById('tpReply'), send=document.getElementById('tpSend');
-    if(!res || !res.length){ meta.textContent='Ticket not found or closed.'; modal.classList.remove('hidden'); return; }
-    const t = res[0]; meta.textContent = `${t.subject} • ${t.category} • ${t.status} • ${t.listing_username||''}`;
-    msgs.innerHTML = (t.messages||[]).map(m=>`<div class="${m.role==='staff'?'text-right':'text-left'}"><span class="inline-block px-3 py-2 rounded-2xl ${m.role==='staff'?'bg-zinc-900 text-white':'bg-white border border-zinc-200'}">${m.text}</span></div>`).join('');
-    modal.classList.remove('hidden');
-    send.onclick = ()=>{ const txt=(input.value||'').trim(); if(!txt) return; const ok = api.portalPost(id, token, txt); if(ok){ input.value=''; maybeOpenPortalFromHash(); } };
-  }
 
   // ======== EVENTS ========
-  document.getElementById('publicDesc').value = localStorage.getItem(LSK.publicDesc)||'';
-  document.getElementById('publicDesc').addEventListener('input', e=> localStorage.setItem(LSK.publicDesc, e.target.value));
-  ['search','platform','status','sort'].forEach(k=> els[k].addEventListener('input', ()=>renderCatalog()));
-  document.getElementById('browseBtn').addEventListener('click', e=>{ e.preventDefault(); document.getElementById('catalogSection').scrollIntoView({behavior:'smooth',block:'start'}); });
-  document.getElementById('catalog').addEventListener('click', e=>{
-    const btn=e.target.closest('button'); if(!btn) return;
-    const id=btn.getAttribute('data-id'), act=btn.getAttribute('data-action'), item=(api.listListings()||[]).find(x=>String(x.id)===String(id));
-    if(!item) return; if(act==='buy' && item.status!=='Sold') openModal(item);
-    if(act==='copy') navigator.clipboard.writeText(item.username).then(()=>{ btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200); });
-  });
-  document.getElementById('copyBtn').addEventListener('click', ()=>{ if(!currentItem) return; navigator.clipboard.writeText(currentItem.username); });
-  document.getElementById('inquiryBtn').addEventListener('click', ()=> document.getElementById('inquiryForm').classList.toggle('hidden'));
-  document.getElementById('sendInquiry').addEventListener('click', ()=>{
-    const msg=(document.getElementById('inquiryText').value||'').trim(); if(!msg||!currentItem) return;
-    document.getElementById('inqStatus').textContent='Opening ticket...';
-    const subject=(document.getElementById('inquirySubject').value||'').trim();
-    const category=document.getElementById('inquiryCategory').value||'General';
-    const contact=(document.getElementById('inquiryContact').value||'').trim();
-    const { id, token } = api.openTicket(currentItem.id, subject, category, contact, msg);
-    const link = `#ticket=${id}:${token}`;
-    document.getElementById('inqStatus').innerHTML=`Ticket opened. <a class="underline" href="${link}">Open your ticket</a>`;
-    navigator.clipboard?.writeText(location.origin + location.pathname + link).catch(()=>{});
-  });
+  document.getElementById('year').textContent = new Date().getFullYear();
+  ['search','platform','status','sort'].forEach(k=> els[k].addEventListener('input', render));
+  els.browseBtn.addEventListener('click', e=>{ e.preventDefault(); document.getElementById('catalogSection').scrollIntoView({behavior:'smooth'}); });
 
-  document.getElementById('loginBtn').addEventListener('click', openLogin);
-  document.getElementById('heroLoginBtn').addEventListener('click', openLogin);
-  document.getElementById('loginForm').addEventListener('submit', e=>{
+  // Open dashboard (public read is allowed)
+  els.addListingBtn.addEventListener('click', e=>{ e.preventDefault(); openAdmin(); });
+
+  // Login
+  document.getElementById('loginForm').addEventListener('submit', async (e)=>{
     e.preventDefault();
-    const fd=new FormData(document.getElementById('loginForm'));
-    const u=String(fd.get('email')||'').trim().toLowerCase(), p=String(fd.get('pass')||'');
-    if((u==='mohamed'||u==='mohamed@local.dev') && p==='Mm322610@123'){ isStaff=true; closeLogin(); openAdmin(); }
-    else alert('Invalid credentials');
+    const fd=new FormData(e.target); const u=String(fd.get('email')||'').trim(); const p=String(fd.get('pass')||'');
+    try{
+      if (MODE==='supabase'){
+        await api.login(u, p);
+      } else {
+        const ok = await api.login(u, p);
+        if (!ok) throw new Error('Invalid');
+      }
+      isStaff = true; closeLogin(); openAdmin();
+    } catch(err){ alert('Invalid credentials'); }
   });
+  els.loginBtn.addEventListener('click', openLogin);
 
-  document.getElementById('addListingBtn').addEventListener('click', e=>{ e.preventDefault(); openAdmin(); });
-  document.getElementById('refreshBtn').addEventListener('click', refreshAdminList);
-  document.getElementById('addForm').addEventListener('submit', e=>{
-    e.preventDefault(); if(!isStaff){ openLogin(); return; }
-    const fd=new FormData(document.getElementById('addForm'));
+  // Add listing (staff only)
+  els.addForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    if (!isStaff){ alert('Read-only for public'); return; }
+    const fd=new FormData(els.addForm);
     const item={ username:String(fd.get('username')||'').trim(), platform:fd.get('platform'), price:Number(fd.get('price')||0), tags:String(fd.get('tags')||'').split(',').map(s=>s.trim()).filter(Boolean), status:fd.get('status') };
-    api.addListing(item); document.getElementById('addForm').reset(); refreshAdminList(); renderCatalog();
+    try { await api.add(item); els.addForm.reset(); await refreshAdminList(); await render(); } catch { alert('Add failed (check auth / policies)'); }
   });
-  document.getElementById('adminList').addEventListener('click', e=>{
+
+  // Delete listing (staff only)
+  document.getElementById('adminList').addEventListener('click', async (e)=>{
     const btn=e.target.closest('button[data-action="del"]'); if(!btn) return;
+    if (!isStaff){ alert('Read-only for public'); return; }
     const id=btn.getAttribute('data-id'); if(!confirm('Delete this listing?')) return;
-    api.deleteListing(id); refreshAdminList(); renderCatalog();
+    try { await api.del(id); await refreshAdminList(); await render(); } catch { alert('Delete failed (check auth / policies)'); }
   });
 
-  document.getElementById('tabListings').addEventListener('click', ()=> showTab('listings'));
-  document.getElementById('tabChats').addEventListener('click', ()=> { showTab('chats'); loadChats(); });
-  document.getElementById('chatsList').addEventListener('click', e=>{ const b=e.target.closest('button[data-thread]'); if(!b) return; openThread(b.getAttribute('data-thread')); });
-  document.getElementById('sendReply').addEventListener('click', replyToThread);
-  document.getElementById('closeTicket').addEventListener('click', closeThread);
-  document.getElementById('reopenTicket').addEventListener('click', reopenThread);
-
-  window.addEventListener('hashchange', maybeOpenPortalFromHash);
-  renderCatalog(); maybeOpenPortalFromHash();
+  // Start
+  render();
   </script>
 
   <section class="max-w-6xl mx-auto px-4 py-6 text-xs text-zinc-500">
