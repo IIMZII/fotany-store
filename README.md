@@ -1,0 +1,1 @@
+# fotany-store
